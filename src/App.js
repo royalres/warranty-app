@@ -14,7 +14,7 @@ function pmDaysLeft(pmDate) {
 
 const T = {
   th: {
-    appTitle: "ระบบรับประกันสินค้า", appSub: "Product Warranty Registration",
+    appTitle: "Royal Group", appSub: "ระบบรับประกันสินค้า | Warranty Registration",
     navRegister: "ลงทะเบียน", navCheck: "ตรวจสอบ", navAdmin: "แอดมิน",
     personal: "บุคคลทั่วไป", company: "นิติบุคคล / บริษัท",
     sectionPersonal: "ข้อมูลบุคคลทั่วไป", sectionCompany: "ข้อมูลบริษัท", sectionProduct: "ข้อมูลสินค้า",
@@ -69,7 +69,7 @@ const T = {
     filterAll: "ทั้งหมด", filterPMDue: "PM ถึงกำหนด", filterNearExp: "ใกล้หมดประกัน", filterExpired: "หมดประกัน",
   },
   en: {
-    appTitle: "Warranty Registration System", appSub: "Product Warranty Registration",
+    appTitle: "Royal Group", appSub: "Warranty Registration System",
     navRegister: "Register", navCheck: "Check Status", navAdmin: "Admin",
     personal: "Individual", company: "Company / Business",
     sectionPersonal: "Personal Information", sectionCompany: "Company Information", sectionProduct: "Product Information",
@@ -122,7 +122,7 @@ const T = {
     filterAll: "All", filterPMDue: "PM Due", filterNearExp: "Near Expiry", filterExpired: "Expired",
   },
   zh: {
-    appTitle: "产品质保登记系统", appSub: "Product Warranty Registration",
+    appTitle: "Royal Group", appSub: "产品质保登记系统",
     navRegister: "登记注册", navCheck: "查询状态", navAdmin: "管理员",
     personal: "个人客户", company: "企业客户",
     sectionPersonal: "个人信息", sectionCompany: "公司信息", sectionProduct: "产品信息",
@@ -303,6 +303,7 @@ function AddressFields({value,onChange,t}){
             )}
           </div>
         ))}
+      </div>
       </div>
     </div>
   );
