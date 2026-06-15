@@ -291,11 +291,21 @@ function StatusBadge({ days, t }) {
   return <span style={badge("#dcfce7","#15803d")}>{t.statusActive(days)}</span>;
 }
 
-function PMBadge({ pmRequired, pmDate, t }) {
+function PMBadge({ pmRequired, pm, t }) {
   if (!pmRequired) return <span style={badge("#f1f5f9","#64748b")}>{t.pmNone}</span>;
-  if (!pmDate) return <span style={badge("#dbeafe","#1d4ed8")}>PM</span>;
-  const d = pmDaysLeft(pmDate);
-  if (d < 0) return <span style={badge("#fee2e2","#b91c1c")}>{t.pmOverdue}</span>;
+  if (!pm?.schedules?.length) return <span style={badge("#dbeafe","#1d4ed8")}>PM</span>;
+  
+  // หา schedule ที่ยังไม่ confirm และเลยวันแล้ว
+  const overdue = pm.schedules.find(s => s.date && !s.confirmed && pmDaysLeft(s.date) < 0);
+  if (overdue) return <span style={badge("#fee2e2","#b91c1c")}>{t.pmOverdue}</span>;
+  
+  // หา schedule ที่ยังไม่ confirm และใกล้ถึง
+  const upcoming = pm.schedules
+    .filter(s => s.date && !s.confirmed)
+    .sort((a, b) => a.date.localeCompare(b.date))[0];
+  if (!upcoming) return <span style={badge("#dcfce7","#15803d")}>PM ✓</span>;
+  
+  const d = pmDaysLeft(upcoming.date);
   if (d <= 30) return <span style={badge("#fef9c3","#92400e")}>{t.pmSoon(d)}</span>;
   return <span style={badge("#dcfce7","#15803d")}>{t.pmOk(d)}</span>;
 }
@@ -384,11 +394,6 @@ function fmtWarranty(months, t) {
   return t.years(m / 12);
 }
 
-function nearestPmDate(pm) {
-  if (!pm || !pm.schedules || pm.schedules.length === 0) return null;
-  const dates = pm.schedules.map(s => s.date).filter(Boolean).sort();
-  return dates[0] || null;
-}
 
 const inp = { width: "100%", padding: "10px 14px", borderRadius: 6, border: "1px solid " + BORDER, background: DARK3, color: TEXT, fontSize: 14, boxSizing: "border-box", outline: "none", fontFamily: "'Inter', sans-serif" };
 const lbl = { fontSize: 12, color: TEXT2, marginBottom: 6, display: "block", letterSpacing: "0.05em", textTransform: "uppercase", fontWeight: 500 };
@@ -866,7 +871,7 @@ const { error } = await supabase.from("registrations").insert([rec]);
                         </div>
                         <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 10 }}>
                           <StatusBadge days={daysLeft(r.purchaseDate, r.warrantyMonths)} t={t} />
-                          <PMBadge pmRequired={r.pm && r.pm.required} pmDate={nearestPmDate(r.pm)} t={t} />
+                          <PMBadge pmRequired={r.pm?.required} pm={r.pm} t={t} />
                         </div>
                       </div>
                     );
@@ -899,7 +904,7 @@ const { error } = await supabase.from("registrations").insert([rec]);
               </div>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
                 <StatusBadge days={daysLeft(viewRecord.purchaseDate, viewRecord.warrantyMonths)} t={t} />
-                <PMBadge pmRequired={viewRecord.pm && viewRecord.pm.required} pmDate={nearestPmDate(viewRecord.pm)} t={t} />
+                <PMBadge pmRequired={viewRecord.pm?.required} pm={viewRecord.pm} t={t} />
               </div>
             </div>
             <div style={{ display: "flex", gap: 0, marginBottom: 20, borderBottom: "1px solid #e2e8f0" }}>
@@ -1013,12 +1018,34 @@ const { error } = await supabase.from("registrations").insert([rec]);
                         {(pmEdit.schedules || []).map((s, i) => (
                           <div key={i} style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-                              <span style={{ fontWeight: 500, fontSize: 13, color: GOLD }}>ครั้งที่ {i + 1}</span>
-                              <button onClick={() => { const updated = pmEdit.schedules.filter((_, idx) => idx !== i); setPmEdit({ ...pmEdit, schedules: updated }); }}
-                                style={{ background: "#fee2e2", border: "none", color: "#b91c1c", borderRadius: 6, padding: "4px 10px", fontSize: 12, cursor: "pointer" }}>
-                                🗑️ {t.pmDeleteSchedule}
-                              </button>
-                            </div>
+  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+    <span style={{ fontWeight: 700, fontSize: 12, color: GOLD, letterSpacing: "0.08em" }}>#{String(i + 1).padStart(2,"0")}</span>
+    {s.confirmed && (
+      <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 99, background: "#0d2818", color: "#4ade80", border: "1px solid #166534", fontWeight: 600 }}>
+        ✓ เข้า PM แล้ว {s.confirmed_at ? new Date(s.confirmed_at).toLocaleDateString("th-TH") : ""}
+      </span>
+    )}
+  </div>
+  <div style={{ display: "flex", gap: 6 }}>
+    {!s.confirmed && (profile?.role === "admin" || profile?.role === "staff") && (
+      <button onClick={async () => {
+        const updated = [...pmEdit.schedules];
+        updated[i] = { ...s, confirmed: true, confirmed_at: new Date().toISOString() };
+        const newPm = { ...pmEdit, schedules: updated };
+        await supabase.from("registrations").update({ pm: newPm }).eq("id", viewRecord.id);
+        setPmEdit(newPm);
+        setViewRecord({ ...viewRecord, pm: newPm });
+        setRecords(rs => rs.map(r => r.id === viewRecord.id ? { ...r, pm: newPm } : r));
+      }} style={{ background: "#0d2818", border: "1px solid #166534", color: "#4ade80", borderRadius: 4, padding: "4px 10px", fontSize: 11, cursor: "pointer", fontWeight: 600 }}>
+        ✓ CONFIRM PM
+      </button>
+    )}
+    <button onClick={() => { const updated = pmEdit.schedules.filter((_, idx) => idx !== i); setPmEdit({ ...pmEdit, schedules: updated }); }}
+      style={{ background: "#2d0e0e", border: "1px solid #7f1d1d", color: "#f87171", borderRadius: 4, padding: "4px 10px", fontSize: 12, cursor: "pointer" }}>
+      🗑️ {t.pmDeleteSchedule}
+    </button>
+  </div>
+</div>
                             <div style={g2}>
                               <Field label={t.pmDate}>
                                 <Inp type="date" value={s.date || ""} onChange={e => { const updated = [...pmEdit.schedules]; updated[i] = { ...s, date: e.target.value }; setPmEdit({ ...pmEdit, schedules: updated }); }} />
