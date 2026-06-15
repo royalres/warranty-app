@@ -551,32 +551,8 @@ const { error } = await supabase.from("registrations").insert([rec]);
           </div>
         </div>
       </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 12, marginRight: 12 }}>
-  <span style={{ fontSize: 11, color: TEXT2, letterSpacing: "0.05em" }}>
-    {profile?.full_name || user?.email}
-  </span>
-  <span style={{ fontSize: 10, padding: "3px 8px", borderRadius: 4, background: profile?.role === "admin" ? "#2d1a00" : profile?.role === "staff" ? "#0d1f2d" : "#1a1a1a", color: profile?.role === "admin" ? GOLD : profile?.role === "staff" ? "#60a5fa" : TEXT2, border: "1px solid " + BORDER, letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 700 }}>
-    {profile?.role || "customer"}
-  </span>
-  <button onClick={onLogout} style={{ background: "none", border: "1px solid " + BORDER, color: TEXT2, fontSize: 11, padding: "4px 10px", borderRadius: 4, cursor: "pointer", letterSpacing: "0.06em" }}>
-    LOGOUT
-  </button>
-</div>
-          <div style={{ fontSize: 10, color: TEXT2, marginBottom: 4, textAlign: "right", letterSpacing: "0.05em" }}>
-  🌐 เลือกภาษา / Language / 语言
-</div>
-          <div style={{ display: "flex", gap: 4 }}>
-            {[["th","ไทย"],["en","EN"],["zh","中文"]].map(([l, label]) => (
-              <button key={l} onClick={() => setLang(l)}
-                style={{ padding: "5px 12px", borderRadius: 6, fontSize: 12, cursor: "pointer", fontWeight: lang === l ? 700 : 400, border: lang === l ? "1.5px solid " + GOLD : "1px solid #4a3000", background: lang === l ? GOLD : "transparent", color: lang === l ? DARK : GOLD }}>
-                {label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
 
-      <div style={{ padding: "1.5rem 1rem" }}>
+      <div style={{ padding: "20px" }}>
         {/* Nav */}
 <div style={{ display: "flex", gap: 2, marginBottom: 28, background: DARK2, borderRadius: 8, padding: 4, border: "1px solid " + BORDER }}>
   {[
