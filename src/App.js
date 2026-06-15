@@ -432,7 +432,7 @@ function Field({ label, required, children }) {
   );
 }
 
-export default function App() {
+export default function App({ user, profile, onLogout }) {
   const [lang, setLang] = useState("th");
   const t = T[lang];
   const [page, setPage] = useState("register");
@@ -546,6 +546,17 @@ export default function App() {
               <div style={{ fontSize: 12, color: GOLD2 }}>{t.appSub}</div>
             </div>
           </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginRight: 12 }}>
+  <span style={{ fontSize: 11, color: TEXT2, letterSpacing: "0.05em" }}>
+    {profile?.full_name || user?.email}
+  </span>
+  <span style={{ fontSize: 10, padding: "3px 8px", borderRadius: 4, background: profile?.role === "admin" ? "#2d1a00" : profile?.role === "staff" ? "#0d1f2d" : "#1a1a1a", color: profile?.role === "admin" ? GOLD : profile?.role === "staff" ? "#60a5fa" : TEXT2, border: "1px solid " + BORDER, letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 700 }}>
+    {profile?.role || "customer"}
+  </span>
+  <button onClick={onLogout} style={{ background: "none", border: "1px solid " + BORDER, color: TEXT2, fontSize: 11, padding: "4px 10px", borderRadius: 4, cursor: "pointer", letterSpacing: "0.06em" }}>
+    LOGOUT
+  </button>
+</div>
           <div style={{ display: "flex", gap: 6 }}>
             {[["th","ไทย"],["en","EN"],["zh","中文"]].map(([l, label]) => (
               <button key={l} onClick={() => setLang(l)}
