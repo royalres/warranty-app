@@ -433,10 +433,12 @@ export default function App({ user, profile, onLogout }) {
   const [activeTab, setActiveTab] = useState("info");
   const [pmEdit, setPmEdit] = useState(null);
   const [pmSaved, setPmSaved] = useState(false);
+  const [pmEmails, setPmEmails] = useState({});
+  const [sendingEmail, setSendingEmail] = useState({});
   const [editSite, setEditSite] = useState(false);
   const [siteValue, setSiteValue] = useState("");
   const [pdpaConsent, setPdpaConsent] = useState(false);
-const [showPrivacy, setShowPrivacy] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
 
   async function loadRecords() {
     setLoading(true);
@@ -1102,7 +1104,26 @@ const { error } = await supabase.from("registrations").insert([rec]);
                                   <textarea value={s.note || ""} onChange={e => { const updated = [...pmEdit.schedules]; updated[i] = { ...s, note: e.target.value }; setPmEdit({ ...pmEdit, schedules: updated }); }}
                                     rows={2} placeholder="รายละเอียดการ PM..." style={{ ...inp, resize: "vertical" }} />
                                 </Field>
+                                <Field label="📧 Email สำหรับส่ง Calendar (คั่นด้วย , สำหรับหลาย Email)">
+                                  <input
+                                    value={pmEmails[i] || ""}
+                                    onChange={e => setPmEmails({ ...pmEmails, [i]: e.target.value })}
+                                    placeholder="email1@example.com, email2@example.com"
+                                    style={inp}
+                                  />
+                                </Field>
                                 <div style={s2}>
+                                  <div style={s2}>
+  <Field label="📧 ส่ง Calendar Email (คั่นด้วย , สำหรับหลาย Email)">
+    <input
+      value={pmEmails[i] || ""}
+      onChange={e => setPmEmails({ ...pmEmails, [i]: e.target.value })}
+      placeholder="email1@example.com, email2@example.com"
+      style={{ ...inp }}
+    />
+  </Field>
+</div>
+                                
   <Field label="📧 Email สำหรับส่ง Calendar (คั่นด้วย , สำหรับหลาย Email)">
     <input
       value={pmEmails[i] || ""}
