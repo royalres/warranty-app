@@ -2,8 +2,13 @@ import { useState, useEffect, useRef } from "react";
 import { supabase } from "./supabaseClient";
 
 const GOLD = "#c9a84c";
-const DARK = "#1a1008";
+const DARK = "#0d0d0d";
+const DARK2 = "#141414";
+const DARK3 = "#1e1e1e";
 const GOLD2 = "#a07830";
+const BORDER = "#2a2a2a";
+const TEXT = "#e8e8e8";
+const TEXT2 = "#888";
 
 function genId() { return "WR" + Date.now().toString().slice(-8); }
 function daysLeft(purchaseDate, months) {
@@ -409,11 +414,11 @@ function nearestPmDate(pm) {
   return dates[0] || null;
 }
 
-const inp = { width: "100%", padding: "8px 12px", borderRadius: 8, border: "0.5px solid #ccc", background: "#fff", color: "#222", fontSize: 14, boxSizing: "border-box" };
-const lbl = { fontSize: 13, color: "#555", marginBottom: 4, display: "block" };
-const sec = { background: "#f8fafc", borderRadius: 12, padding: "18px 20px", marginBottom: 18, border: "0.5px solid #e2e8f0" };
-const secT = { fontWeight: 500, fontSize: 15, marginBottom: 16, color: "#1e293b" };
-const g2 = { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 14px" };
+const inp = { width: "100%", padding: "10px 14px", borderRadius: 6, border: "1px solid " + BORDER, background: DARK3, color: TEXT, fontSize: 14, boxSizing: "border-box", outline: "none", fontFamily: "'Inter', sans-serif" };
+const lbl = { fontSize: 12, color: TEXT2, marginBottom: 6, display: "block", letterSpacing: "0.05em", textTransform: "uppercase", fontWeight: 500 };
+const sec = { background: DARK2, borderRadius: 8, padding: "20px 22px", marginBottom: 16, border: "1px solid " + BORDER };
+const secT = { fontWeight: 600, fontSize: 14, marginBottom: 18, color: GOLD, letterSpacing: "0.08em", textTransform: "uppercase", display: "flex", alignItems: "center", gap: 8 };
+const g2 = { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 16px" };
 const s2 = { gridColumn: "span 2" };
 
 function Inp(p) { return <input style={inp} {...p} />; }
@@ -535,11 +540,12 @@ export default function App() {
       <div style={{ background: DARK, padding: "18px 24px", marginBottom: 0, borderBottom: "2px solid " + GOLD }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-  <img src="/res-logo.png" alt="Royal Group" style={{ height: 56, maxWidth: 200, objectFit: "contain" }} />
-  <div style={{ borderLeft: "1px solid " + GOLD, paddingLeft: 14 }}>
-    <div style={{ fontSize: 12, color: GOLD }}>{t.appSub}</div>
-  </div>
-</div>
+            <div style={{ width: 50, height: 50, borderRadius: "50%", border: "2px solid " + GOLD, background: DARK, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>👑</div>
+            <div>
+              <div style={{ fontWeight: 700, fontSize: 20, color: GOLD, letterSpacing: 1 }}>{t.appTitle}</div>
+              <div style={{ fontSize: 12, color: GOLD2 }}>{t.appSub}</div>
+            </div>
+          </div>
           <div style={{ display: "flex", gap: 6 }}>
             {[["th","ไทย"],["en","EN"],["zh","中文"]].map(([l, label]) => (
               <button key={l} onClick={() => setLang(l)}
@@ -566,22 +572,22 @@ export default function App() {
         {page === "register" && (
           <div>
             {success && (
-              <div style={{ padding: "14px 18px", borderRadius: 10, marginBottom: 18, background: success.ok ? "#dcfce7" : "#fee2e2", color: success.ok ? "#15803d" : "#b91c1c", border: "1px solid " + (success.ok ? "#86efac" : "#fca5a5") }}>
+              <div style={{ padding: "14px 18px", borderRadius: 6, marginBottom: 16, background: success.ok ? "#0d2818" : "#2d0e0e", color: success.ok ? "#4ade80" : "#f87171", border: "1px solid " + (success.ok ? "#166534" : "#7f1d1d"), fontSize: 14 }}>
                 {success.ok ? t.successMsg(success.id) : "✗ " + success.msg}
               </div>
             )}
-            <div style={{ display: "flex", gap: 10, marginBottom: 22 }}>
+            <div style={{ display: "flex", gap: 4, marginBottom: 20, background: DARK2, borderRadius: 6, padding: 4, border: "1px solid " + BORDER }}>
               {["personal","company"].map(tp => (
                 <button key={tp} onClick={() => setF("type", tp)}
-                  style={{ flex: 1, padding: "10px", borderRadius: 10, border: form.type === tp ? "2px solid " + GOLD : "1px solid #e2e8f0", background: form.type === tp ? DARK : "#f8fafc", color: form.type === tp ? GOLD : "#64748b", cursor: "pointer", fontWeight: form.type === tp ? 700 : 400, fontSize: 14 }}>
-                  {tp === "personal" ? "👤 " + t.personal : "🏢 " + t.company}
+                  style={{ flex: 1, padding: "10px", borderRadius: 4, border: "none", background: form.type === tp ? GOLD : "transparent", color: form.type === tp ? DARK : TEXT2, cursor: "pointer", fontWeight: form.type === tp ? 700 : 400, fontSize: 12, letterSpacing: "0.06em", textTransform: "uppercase", transition: "all 0.2s" }}>
+                  {tp === "personal" ? t.personal : t.company}
                 </button>
               ))}
             </div>
 
             {form.type === "personal" && (
               <div style={sec}>
-                <div style={secT}>👤 {t.sectionPersonal}</div>
+                <div style={secT}><span style={{ color: GOLD }}>◆</span> {t.sectionPersonal}</div>
                 <div style={g2}>
                   <Field label={t.firstName} required><Inp value={form.firstName} onChange={e => setF("firstName", e.target.value)} placeholder={t.contactFirstPlaceholder} /></Field>
                   <Field label={t.lastName} required><Inp value={form.lastName} onChange={e => setF("lastName", e.target.value)} placeholder={t.contactLastPlaceholder} /></Field>
@@ -595,7 +601,7 @@ export default function App() {
 
             {form.type === "company" && (
               <div style={sec}>
-                <div style={secT}>🏢 {t.sectionCompany}</div>
+                <div style={secT}><span style={{ color: GOLD }}>◆</span> {t.sectionCompany}</div>
                 <div style={g2}>
                   <div style={s2}><Field label={t.companyType} required>
                     <Sel value={form.companyType} onChange={e => setF("companyType", e.target.value)}>
@@ -627,7 +633,7 @@ export default function App() {
             )}
 
             <div style={sec}>
-              <div style={secT}>📦 {t.sectionProduct}</div>
+              <div style={secT}><span style={{ color: GOLD }}>◆</span> {t.sectionProduct}</div>
               <div style={g2}>
                 <div style={s2}><Field label={t.productType} required>
                   <Sel value={form.productType} onChange={e => setF("productType", e.target.value)}>
@@ -666,8 +672,8 @@ export default function App() {
             </div>
 
             <button onClick={handleSubmit} disabled={submitting}
-              style={{ width: "100%", padding: "12px", borderRadius: 10, background: DARK, color: GOLD, fontWeight: 700, fontSize: 15, cursor: submitting ? "not-allowed" : "pointer", border: "1.5px solid " + GOLD, opacity: submitting ? 0.7 : 1 }}>
-              {submitting ? t.saving : "🛡️ " + t.submitBtn}
+              style={{ width: "100%", padding: "14px", borderRadius: 6, background: submitting ? DARK3 : GOLD, color: submitting ? TEXT2 : DARK, fontWeight: 700, fontSize: 13, cursor: submitting ? "not-allowed" : "pointer", border: "none", letterSpacing: "0.1em", textTransform: "uppercase", transition: "all 0.2s" }}>
+              {submitting ? t.saving : "— " + t.submitBtn + " —"}
             </button>
           </div>
         )}
@@ -676,26 +682,26 @@ export default function App() {
         {page === "check" && (
           <div>
             <div style={sec}>
-              <div style={secT}>🔍 {t.checkTitle}</div>
-              <div style={{ display: "flex", gap: 10 }}>
+              <div style={secT}><span style={{ color: GOLD }}>◆</span> {t.checkTitle}</div>
+              <div style={{ display: "flex", gap: 8 }}>
                 <Inp value={checkSerial} onChange={e => setCheckSerial(e.target.value)} placeholder={t.checkPlaceholder} onKeyDown={e => e.key === "Enter" && handleCheck()} />
-                <button onClick={handleCheck} style={btnBlue}>{t.checkBtn}</button>
+                <button onClick={handleCheck} style={{ padding: "10px 20px", borderRadius: 6, border: "none", background: GOLD, color: DARK, cursor: "pointer", fontWeight: 700, whiteSpace: "nowrap", fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase" }}>{t.checkBtn}</button>
               </div>
             </div>
             {checkResult === "notfound" && (
-              <div style={{ marginTop: 16, padding: "14px 18px", borderRadius: 10, background: "#fee2e2", color: "#b91c1c", border: "1px solid #fca5a5" }}>{t.notFound}</div>
+              <div style={{ padding: "14px 18px", borderRadius: 6, background: "#2d0e0e", color: "#f87171", border: "1px solid #7f1d1d", fontSize: 14 }}>{t.notFound}</div>
             )}
             {checkResult && checkResult !== "notfound" && (
-              <div style={{ marginTop: 16, ...sec }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+              <div style={sec}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
                   <div>
-                    <div style={{ fontWeight: 600, fontSize: 16 }}>{checkResult.model}</div>
-                    <div style={{ fontSize: 13, color: "#64748b" }}>S/N: {checkResult.serial}</div>
+                    <div style={{ fontWeight: 700, fontSize: 18, color: TEXT }}>{checkResult.model}</div>
+                    <div style={{ fontSize: 12, color: TEXT2, marginTop: 4, letterSpacing: "0.05em" }}>S/N: {checkResult.serial}</div>
                   </div>
                   <StatusBadge days={daysLeft(checkResult.purchaseDate, checkResult.warrantyMonths)} t={t} />
                 </div>
-                <div style={{ fontWeight: 500, fontSize: 14, marginBottom: 10 }}>📦 {t.sectionProduct}</div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 18 }}>
+                <div style={{ fontSize: 11, color: GOLD, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10, fontWeight: 600 }}>◆ {t.sectionProduct}</div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 20 }}>
                   {[
                     [t.fldProduct, checkResult.productType || "-"],
                     [t.fldBrand, checkResult.brand === "Other" ? (checkResult.brandOther || "Other") : (checkResult.brand || "-")],
@@ -706,14 +712,14 @@ export default function App() {
                     [t.fldExpire, (() => { const d = new Date(checkResult.purchaseDate); d.setMonth(d.getMonth() + Number(checkResult.warrantyMonths)); return d.toLocaleDateString("th-TH"); })()],
                     [t.fldReceipt, checkResult.receipt || "-"],
                   ].map(([k, v]) => (
-                    <div key={k} style={{ background: "#fff", borderRadius: 8, padding: "10px 14px", border: "0.5px solid #e2e8f0" }}>
-                      <div style={{ fontSize: 12, color: "#64748b", marginBottom: 2 }}>{k}</div>
-                      <div style={{ fontSize: 14, fontWeight: 500 }}>{v}</div>
+                    <div key={k} style={{ background: DARK3, borderRadius: 6, padding: "10px 14px", border: "1px solid " + BORDER }}>
+                      <div style={{ fontSize: 10, color: TEXT2, marginBottom: 4, letterSpacing: "0.08em", textTransform: "uppercase" }}>{k}</div>
+                      <div style={{ fontSize: 14, fontWeight: 500, color: TEXT }}>{v}</div>
                     </div>
                   ))}
                 </div>
-                <div style={{ fontWeight: 500, fontSize: 14, marginBottom: 10 }}>
-                  {checkResult.type === "personal" ? "👤 " + t.sectionPersonal : "🏢 " + t.sectionCompany}
+                <div style={{ fontSize: 11, color: GOLD, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10, fontWeight: 600 }}>
+                  ◆ {checkResult.type === "personal" ? t.sectionPersonal : t.sectionCompany}
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                   {(checkResult.type === "personal" ? [
@@ -728,13 +734,13 @@ export default function App() {
                     [t.fldTax, checkResult.taxId || "-"],
                     [t.fldAddress, fmtAddr(checkResult.companyAddr)],
                   ]).map(([k, v]) => (
-                    <div key={k} style={{ background: "#fff", borderRadius: 8, padding: "10px 14px", border: "0.5px solid #e2e8f0" }}>
-                      <div style={{ fontSize: 12, color: "#64748b", marginBottom: 2 }}>{k}</div>
-                      <div style={{ fontSize: 14, fontWeight: 500 }}>{v}</div>
+                    <div key={k} style={{ background: DARK3, borderRadius: 6, padding: "10px 14px", border: "1px solid " + BORDER }}>
+                      <div style={{ fontSize: 10, color: TEXT2, marginBottom: 4, letterSpacing: "0.08em", textTransform: "uppercase" }}>{k}</div>
+                      <div style={{ fontSize: 14, fontWeight: 500, color: TEXT }}>{v}</div>
                     </div>
                   ))}
                 </div>
-                <div style={{ marginTop: 14, fontSize: 12, color: "#94a3b8", textAlign: "center" }}>{t.regCode}: {checkResult.id}</div>
+                <div style={{ marginTop: 16, fontSize: 11, color: TEXT2, textAlign: "center", letterSpacing: "0.05em" }}>{t.regCode}: {checkResult.id}</div>
               </div>
             )}
           </div>
@@ -742,13 +748,13 @@ export default function App() {
 
         {/* ===== ADMIN LOGIN ===== */}
         {page === "admin" && !adminAuth && (
-          <div style={{ ...sec, maxWidth: 340 }}>
-            <div style={secT}>🔐 {t.adminPin}</div>
+          <div style={{ ...sec, maxWidth: 360, margin: "0 auto" }}>
+            <div style={secT}><span style={{ color: GOLD }}>◆</span> {t.adminPin}</div>
             <Inp type="password" value={adminPin} onChange={e => setAdminPin(e.target.value)} placeholder={t.pinPlaceholder}
               onKeyDown={e => { if (e.key === "Enter") { if (adminPin === ADMIN_PASSWORD) { setAdminAuth(true); setAdminError(""); } else setAdminError(t.wrongPin); } }} />
-            {adminError && <div style={{ fontSize: 13, color: "#b91c1c", marginTop: 8 }}>{adminError}</div>}
+            {adminError && <div style={{ fontSize: 13, color: "#f87171", marginTop: 8 }}>{adminError}</div>}
             <button onClick={() => { if (adminPin === ADMIN_PASSWORD) { setAdminAuth(true); setAdminError(""); } else setAdminError(t.wrongPin); }}
-              style={{ marginTop: 14, width: "100%", padding: "10px", borderRadius: 8, border: "1.5px solid " + GOLD, background: DARK, color: GOLD, cursor: "pointer", fontWeight: 700 }}>
+              style={{ marginTop: 14, width: "100%", padding: "12px", borderRadius: 6, border: "none", background: GOLD, color: DARK, cursor: "pointer", fontWeight: 700, fontSize: 13, letterSpacing: "0.1em", textTransform: "uppercase" }}>
               {t.loginBtn}
             </button>
           </div>
@@ -757,53 +763,53 @@ export default function App() {
         {/* ===== ADMIN DASHBOARD ===== */}
         {page === "admin" && adminAuth && !viewRecord && (
           <div>
-            {loading && <div style={{ textAlign: "center", padding: 24, color: "#64748b" }}>{t.loading}</div>}
+            {loading && <div style={{ textAlign: "center", padding: 40, color: TEXT2, letterSpacing: "0.1em" }}>{t.loading}</div>}
             {!loading && (
               <div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 12, marginBottom: 22 }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 10, marginBottom: 20 }}>
                   {[
-                    [t.totalReg, records.length, "#dbeafe", "#1d4ed8"],
-                    [t.nearExpire, expiringSoon.length, "#fef9c3", "#92400e"],
-                    [t.expired, records.filter(r => daysLeft(r.purchaseDate, r.warrantyMonths) < 0).length, "#fee2e2", "#b91c1c"],
-                    [t.pmDue, pmDueRecords.length, "#f0fdf4", "#15803d"],
-                  ].map(([label, val, bg, color]) => (
-                    <div key={label} style={{ background: bg, borderRadius: 10, padding: "14px 16px" }}>
-                      <div style={{ fontSize: 12, color, marginBottom: 4 }}>{label}</div>
-                      <div style={{ fontSize: 24, fontWeight: 700, color }}>{val}</div>
+                    [t.totalReg, records.length, GOLD, DARK3],
+                    [t.nearExpire, expiringSoon.length, "#f59e0b", DARK3],
+                    [t.expired, records.filter(r => daysLeft(r.purchaseDate, r.warrantyMonths) < 0).length, "#ef4444", DARK3],
+                    [t.pmDue, pmDueRecords.length, "#22c55e", DARK3],
+                  ].map(([label, val, color, bg]) => (
+                    <div key={label} style={{ background: bg, borderRadius: 8, padding: "16px", border: "1px solid " + BORDER, borderTop: "2px solid " + color }}>
+                      <div style={{ fontSize: 10, color: TEXT2, marginBottom: 8, letterSpacing: "0.08em", textTransform: "uppercase" }}>{label}</div>
+                      <div style={{ fontSize: 28, fontWeight: 700, color }}>{val}</div>
                     </div>
                   ))}
                 </div>
-                <div style={{ display: "flex", gap: 8, marginBottom: 14, flexWrap: "wrap" }}>
+                <div style={{ display: "flex", gap: 4, marginBottom: 14, background: DARK2, borderRadius: 6, padding: 4, border: "1px solid " + BORDER }}>
                   {[["all",t.filterAll],["pmdue",t.filterPMDue],["nearexp",t.filterNearExp],["expired",t.filterExpired]].map(([val, label]) => (
                     <button key={val} onClick={() => setFilter(val)}
-                      style={{ padding: "6px 14px", borderRadius: 8, fontSize: 13, cursor: "pointer", border: filter === val ? "2px solid " + GOLD : "1px solid #e2e8f0", background: filter === val ? DARK : "#f8fafc", color: filter === val ? GOLD : "#64748b", fontWeight: filter === val ? 700 : 400 }}>
+                      style={{ flex: 1, padding: "7px", borderRadius: 4, fontSize: 11, cursor: "pointer", border: "none", background: filter === val ? GOLD : "transparent", color: filter === val ? DARK : TEXT2, fontWeight: filter === val ? 700 : 400, letterSpacing: "0.06em", textTransform: "uppercase", transition: "all 0.2s" }}>
                       {label}
                     </button>
                   ))}
                 </div>
-                <div style={{ marginBottom: 16, position: "relative" }}>
-                  <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#94a3b8" }}>🔍</span>
-                  <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t.searchPlaceholder} style={{ ...inp, paddingLeft: 36 }} />
+                <div style={{ marginBottom: 14, position: "relative" }}>
+                  <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t.searchPlaceholder}
+                    style={{ ...inp, paddingLeft: 14 }} />
                 </div>
-                <div style={{ borderRadius: 12, border: "1px solid #e2e8f0", overflow: "hidden" }}>
-                  {filtered.length === 0 && <div style={{ padding: "24px", textAlign: "center", color: "#94a3b8" }}>{t.noData}</div>}
+                <div style={{ borderRadius: 8, border: "1px solid " + BORDER, overflow: "hidden" }}>
+                  {filtered.length === 0 && <div style={{ padding: "32px", textAlign: "center", color: TEXT2, letterSpacing: "0.05em" }}>{t.noData}</div>}
                   {filtered.map((r, i) => {
                     const name = r.type === "personal" ? r.firstName + " " + r.lastName : r.companyName;
                     return (
-                      <div key={r.id} style={{ borderBottom: "1px solid #f1f5f9", background: i % 2 === 0 ? "#fff" : "#f8fafc", padding: "12px 14px" }}>
+                      <div key={r.id} style={{ borderBottom: "1px solid " + BORDER, background: i % 2 === 0 ? DARK2 : DARK3, padding: "14px 16px", transition: "background 0.15s" }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
                           <div style={{ minWidth: 0, flex: 1 }}>
-                            <div style={{ fontWeight: 600, fontSize: 14, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{name}</div>
-                            <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 2, fontFamily: "monospace" }}>{r.id}</div>
+                            <div style={{ fontWeight: 600, fontSize: 14, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: TEXT }}>{name}</div>
+                            <div style={{ fontSize: 11, color: TEXT2, marginTop: 3, fontFamily: "monospace", letterSpacing: "0.05em" }}>{r.id}</div>
                           </div>
                           <button onClick={() => { setViewRecord(r); setPmEdit(r.pm ? { ...r.pm, schedules: [...(r.pm.schedules || [])] } : { required: false, schedules: [] }); setActiveTab("info"); }}
-                            style={{ background: "none", border: "none", cursor: "pointer", color: GOLD, fontSize: 18, flexShrink: 0 }}>👁️</button>
+                            style={{ background: DARK, border: "1px solid " + BORDER, cursor: "pointer", color: GOLD, fontSize: 12, flexShrink: 0, padding: "6px 12px", borderRadius: 4, letterSpacing: "0.06em", fontWeight: 600 }}>VIEW</button>
                         </div>
-                        <div style={{ marginTop: 6, fontSize: 13, color: "#64748b" }}>
-                          <span style={{ marginRight: 12 }}>📦 {r.model}</span>
-                          <span style={{ fontFamily: "monospace", fontSize: 12 }}>{r.serial}</span>
+                        <div style={{ marginTop: 8, fontSize: 12, color: TEXT2, letterSpacing: "0.03em" }}>
+                          <span style={{ marginRight: 16, color: TEXT }}>{r.model}</span>
+                          <span style={{ fontFamily: "monospace" }}>{r.serial}</span>
                         </div>
-                        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8 }}>
+                        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 10 }}>
                           <StatusBadge days={daysLeft(r.purchaseDate, r.warrantyMonths)} t={t} />
                           <PMBadge pmRequired={r.pm && r.pm.required} pmDate={nearestPmDate(r.pm)} t={t} />
                         </div>
@@ -811,7 +817,7 @@ export default function App() {
                     );
                   })}
                 </div>
-                <div style={{ marginTop: 10, fontSize: 12, color: "#94a3b8" }}>{t.showing(filtered.length, records.length)}</div>
+                <div style={{ marginTop: 10, fontSize: 11, color: TEXT2, letterSpacing: "0.05em" }}>{t.showing(filtered.length, records.length)}</div>
               </div>
             )}
           </div>
