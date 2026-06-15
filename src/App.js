@@ -495,8 +495,7 @@ export default function App({ user, profile, onLogout }) {
   if (filter === "nearexp") filtered = filtered.filter(r => { const d = daysLeft(r.purchaseDate, r.warrantyMonths); return d >= 0 && d <= 30; });
   if (filter === "expired") filtered = filtered.filter(r => daysLeft(r.purchaseDate, r.warrantyMonths) < 0);
 
-  const btnGold = { padding: "10px 18px", borderRadius: 10, border: "2px solid " + GOLD, background: DARK, color: GOLD, fontWeight: 700, fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", gap: 8 };
-
+  
   return (
     <div style={{ fontFamily: "sans-serif", maxWidth: 720, margin: "0 auto", color: "#1e293b" }}>
 
