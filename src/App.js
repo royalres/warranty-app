@@ -82,6 +82,8 @@ const T = {
     tabInfo: "ข้อมูล", tabPM: "PM",
     filterAll: "ทั้งหมด", filterPMDue: "PM ถึงกำหนด", filterNearExp: "ใกล้หมดประกัน", filterExpired: "หมดประกัน",
     loading: "กำลังโหลด...", saving: "กำลังบันทึก...",
+    pdpaText: "ข้าพเจ้ายินยอมให้บริษัท รอยัล เอ็นจิเนียริ่ง เซอร์วิส จำกัด เก็บรวบรวมและใช้ข้อมูลส่วนบุคคลของข้าพเจ้า เพื่อวัตถุประสงค์ในการลงทะเบียนรับประกันสินค้าและการติดต่อที่เกี่ยวข้อง ตาม",
+    pdpaLink: "นโยบายความเป็นส่วนตัว",
   },
   en: {
     appTitle: "Royal Group", appSub: "Warranty Registration System",
@@ -138,6 +140,8 @@ const T = {
     tabInfo: "Info", tabPM: "PM",
     filterAll: "All", filterPMDue: "PM Due", filterNearExp: "Near Expiry", filterExpired: "Expired",
     loading: "Loading...", saving: "Saving...",
+    pdpaText: "I consent to Royal Engineering Service Co., Ltd. collecting and using my personal data for the purpose of product warranty registration and related communications, in accordance with the",
+    pdpaLink: "Privacy Policy",
   },
   zh: {
     appTitle: "Royal Group", appSub: "产品质保登记系统",
@@ -194,6 +198,8 @@ const T = {
     tabInfo: "信息", tabPM: "PM",
     filterAll: "全部", filterPMDue: "PM 到期", filterNearExp: "即将到期", filterExpired: "已过期",
     loading: "加载中...", saving: "保存中...",
+    pdpaText: "本人同意皇家工程服务有限公司收集和使用本人的个人数据，用于产品质保登记及相关通讯目的，依据",
+    pdpaLink: "隐私政策",
   }
 };
 
@@ -527,7 +533,10 @@ const { error } = await supabase.from("registrations").insert([rec]);
     LOGOUT
   </button>
 </div>
-          <div style={{ display: "flex", gap: 6 }}>
+          <div style={{ fontSize: 10, color: TEXT2, marginBottom: 4, textAlign: "right", letterSpacing: "0.05em" }}>
+  🌐 เลือกภาษา / Language / 语言
+</div>
+          <div style={{ display: "flex", gap: 4 }}>
             {[["th","ไทย"],["en","EN"],["zh","中文"]].map(([l, label]) => (
               <button key={l} onClick={() => setLang(l)}
                 style={{ padding: "5px 12px", borderRadius: 6, fontSize: 12, cursor: "pointer", fontWeight: lang === l ? 700 : 400, border: lang === l ? "1.5px solid " + GOLD : "1px solid #4a3000", background: lang === l ? GOLD : "transparent", color: lang === l ? DARK : GOLD }}>
@@ -663,11 +672,10 @@ const { error } = await supabase.from("registrations").insert([rec]);
                 <input type="checkbox" checked={pdpaConsent} onChange={e => setPdpaConsent(e.target.checked)}
                   style={{ width: 16, height: 16, marginTop: 2, flexShrink: 0, accentColor: GOLD }} />
                 <span style={{ fontSize: 13, color: TEXT, lineHeight: 1.6 }}>
-                  ข้าพเจ้ายินยอมให้บริษัท รอยัล เอ็นจิเนียริ่ง เซอร์วิส จำกัด เก็บรวบรวมและใช้ข้อมูลส่วนบุคคลของข้าพเจ้า
-                  เพื่อวัตถุประสงค์ในการลงทะเบียนรับประกันสินค้าและการติดต่อที่เกี่ยวข้อง ตาม{" "}
+                  {t.pdpaText}{" "}
                   <span onClick={() => setShowPrivacy(true)}
                     style={{ color: GOLD, textDecoration: "underline", cursor: "pointer", fontWeight: 600 }}>
-                    นโยบายความเป็นส่วนตัว
+                    {t.pdpaLink}
                   </span>
                 </span>
               </label>
