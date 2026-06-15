@@ -2,12 +2,12 @@ import { useState } from "react";
 import { supabase } from "./supabaseClient";
 
 const GOLD = "#c9a84c";
-const DARK = "#0d0d0d";
-const DARK2 = "#141414";
-const DARK3 = "#1e1e1e";
-const BORDER = "#2a2a2a";
-const TEXT = "#e8e8e8";
-const TEXT2 = "#888";
+const DARK = "#0a1628";
+const DARK2 = "#0d1f3c";
+const DARK3 = "#112244";
+const BORDER = "#1e3a5f";
+const TEXT = "#e8edf5";
+const TEXT2 = "#7a9cc0";
 
 const inp = {
   width: "100%", padding: "11px 14px", borderRadius: 6,

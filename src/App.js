@@ -1,16 +1,17 @@
 import { useState, useEffect, useRef } from "react";
+import { searchAddressByTambon, searchAddressByAmphoe, searchAddressByProvince, searchAddressByZipcode } from "thailand-address-database";
 import { supabase } from "./supabaseClient";
 import UserManager from "./UserManager";
 import { exportToCSV } from "./ExportExcel";
 
 const GOLD = "#c9a84c";
-const DARK = "#0d0d0d";
-const DARK2 = "#141414";
-const DARK3 = "#1e1e1e";
+const DARK = "#0a1628";
+const DARK2 = "#0d1f3c";
+const DARK3 = "#112244";
+const BORDER = "#1e3a5f";
+const TEXT = "#e8edf5";
+const TEXT2 = "#7a9cc0";
 const GOLD2 = "#a07830";
-const BORDER = "#2a2a2a";
-const TEXT = "#e8e8e8";
-const TEXT2 = "#888";
 
 function genId() { return "WR" + Date.now().toString().slice(-8); }
 function daysLeft(purchaseDate, months) {
@@ -289,48 +290,6 @@ function PMBadge({ pmRequired, pmDate, t }) {
   return <span style={badge("#dcfce7","#15803d")}>{t.pmOk(d)}</span>;
 }
 
-const THAI_DB = [
-  {subdistrict:"พระบรมมหาราชวัง",district:"พระนคร",province:"กรุงเทพมหานคร",zipcode:"10200"},
-  {subdistrict:"วัดราชบพิธ",district:"พระนคร",province:"กรุงเทพมหานคร",zipcode:"10200"},
-  {subdistrict:"บางซื่อ",district:"บางซื่อ",province:"กรุงเทพมหานคร",zipcode:"10800"},
-  {subdistrict:"ลาดยาว",district:"จตุจักร",province:"กรุงเทพมหานคร",zipcode:"10900"},
-  {subdistrict:"จตุจักร",district:"จตุจักร",province:"กรุงเทพมหานคร",zipcode:"10900"},
-  {subdistrict:"ลาดพร้าว",district:"ลาดพร้าว",province:"กรุงเทพมหานคร",zipcode:"10230"},
-  {subdistrict:"สาทร",district:"สาทร",province:"กรุงเทพมหานคร",zipcode:"10120"},
-  {subdistrict:"สีลม",district:"บางรัก",province:"กรุงเทพมหานคร",zipcode:"10500"},
-  {subdistrict:"คลองเตย",district:"คลองเตย",province:"กรุงเทพมหานคร",zipcode:"10110"},
-  {subdistrict:"วัฒนา",district:"วัฒนา",province:"กรุงเทพมหานคร",zipcode:"10110"},
-  {subdistrict:"บางแค",district:"บางแค",province:"กรุงเทพมหานคร",zipcode:"10160"},
-  {subdistrict:"ประเวศ",district:"ประเวศ",province:"กรุงเทพมหานคร",zipcode:"10250"},
-  {subdistrict:"พัทยา",district:"บางละมุง",province:"ชลบุรี",zipcode:"20150"},
-  {subdistrict:"บางละมุง",district:"บางละมุง",province:"ชลบุรี",zipcode:"20150"},
-  {subdistrict:"บางปลาสร้อย",district:"เมืองชลบุรี",province:"ชลบุรี",zipcode:"20000"},
-  {subdistrict:"แสนสุข",district:"เมืองชลบุรี",province:"ชลบุรี",zipcode:"20130"},
-  {subdistrict:"สวนใหญ่",district:"เมืองนนทบุรี",province:"นนทบุรี",zipcode:"11000"},
-  {subdistrict:"บางเขน",district:"เมืองนนทบุรี",province:"นนทบุรี",zipcode:"11000"},
-  {subdistrict:"ปากเกร็ด",district:"ปากเกร็ด",province:"นนทบุรี",zipcode:"11120"},
-  {subdistrict:"บางบัวทอง",district:"บางบัวทอง",province:"นนทบุรี",zipcode:"11110"},
-  {subdistrict:"บางปรอก",district:"เมืองปทุมธานี",province:"ปทุมธานี",zipcode:"12000"},
-  {subdistrict:"รังสิต",district:"ธัญบุรี",province:"ปทุมธานี",zipcode:"12110"},
-  {subdistrict:"คลองหก",district:"คลองหลวง",province:"ปทุมธานี",zipcode:"12120"},
-  {subdistrict:"ศรีภูมิ",district:"เมืองเชียงใหม่",province:"เชียงใหม่",zipcode:"50200"},
-  {subdistrict:"สุเทพ",district:"เมืองเชียงใหม่",province:"เชียงใหม่",zipcode:"50200"},
-  {subdistrict:"ช้างเผือก",district:"เมืองเชียงใหม่",province:"เชียงใหม่",zipcode:"50300"},
-  {subdistrict:"ในเมือง",district:"เมืองขอนแก่น",province:"ขอนแก่น",zipcode:"40000"},
-  {subdistrict:"บ้านเป็ด",district:"เมืองขอนแก่น",province:"ขอนแก่น",zipcode:"40000"},
-  {subdistrict:"ในเมือง",district:"เมืองนครราชสีมา",province:"นครราชสีมา",zipcode:"30000"},
-  {subdistrict:"หมากแข้ง",district:"เมืองอุดรธานี",province:"อุดรธานี",zipcode:"41000"},
-  {subdistrict:"บ่อยาง",district:"เมืองสงขลา",province:"สงขลา",zipcode:"90000"},
-  {subdistrict:"ตลาดใหญ่",district:"เมืองภูเก็ต",province:"ภูเก็ต",zipcode:"83000"},
-  {subdistrict:"ป่าตอง",district:"กะทู้",province:"ภูเก็ต",zipcode:"83150"},
-  {subdistrict:"เทพกษัตรี",district:"ถลาง",province:"ภูเก็ต",zipcode:"83110"},
-  {subdistrict:"หน้าเมือง",district:"เมืองราชบุรี",province:"ราชบุรี",zipcode:"70000"},
-  {subdistrict:"พระปฐมเจดีย์",district:"เมืองนครปฐม",province:"นครปฐม",zipcode:"73000"},
-  {subdistrict:"ประตูชัย",district:"พระนครศรีอยุธยา",province:"พระนครศรีอยุธยา",zipcode:"13000"},
-  {subdistrict:"มหาชัย",district:"เมืองสมุทรสาคร",province:"สมุทรสาคร",zipcode:"74000"},
-  {subdistrict:"ท่าฉลอม",district:"เมืองสมุทรสาคร",province:"สมุทรสาคร",zipcode:"74000"},
-  {subdistrict:"ท่าประดู่",district:"เมืองระยอง",province:"ระยอง",zipcode:"21000"},
-];
 
 function AddressFields({ value, onChange, t }) {
   const [suggestions, setSuggestions] = useState([]);
@@ -345,14 +304,19 @@ function AddressFields({ value, onChange, t }) {
 
   function search(field, val) {
     onChange({ ...value, [field]: val });
-    if (!val) { setSuggestions([]); return; }
-    const q = val.toLowerCase();
+    if (!val || val.length < 2) { setSuggestions([]); return; }
     let res = [];
-    if (field === "subdistrict") res = THAI_DB.filter(r => r.subdistrict.toLowerCase().startsWith(q)).slice(0,8);
-    else if (field === "district") res = THAI_DB.filter(r => r.district.toLowerCase().startsWith(q)).slice(0,8);
-    else if (field === "province") res = THAI_DB.filter(r => r.province.toLowerCase().startsWith(q)).slice(0,8);
-    else if (field === "postcode") res = THAI_DB.filter(r => String(r.zipcode).startsWith(val)).slice(0,8);
-    setSuggestions(res); setActiveField(field);
+    if (field === "subdistrict") res = searchAddressByTambon(val).slice(0, 8);
+    else if (field === "district") res = searchAddressByAmphoe(val).slice(0, 8);
+    else if (field === "province") res = searchAddressByProvince(val).slice(0, 8);
+    else if (field === "postcode") res = searchAddressByZipcode(val).slice(0, 8);
+    const mapped = res.map(r => ({
+      subdistrict: r.tambon || r.subdistrict || "",
+      district: r.amphoe || r.district || "",
+      province: r.province || "",
+      zipcode: r.zipcode || r.postcode || ""
+    }));
+    setSuggestions(mapped); setActiveField(field);
   }
 
   function pick(item) {
@@ -541,7 +505,7 @@ export default function App({ user, profile, onLogout }) {
       <div style={{ background: DARK, padding: "18px 24px", marginBottom: 0, borderBottom: "2px solid " + GOLD }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <div style={{ width: 50, height: 50, borderRadius: "50%", border: "2px solid " + GOLD, background: DARK, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>👑</div>
+            <img src="/res-logo.png" alt="Royal Group" style={{ height: 48, objectFit: "contain" }} />
             <div>
               <div style={{ fontWeight: 700, fontSize: 20, color: GOLD, letterSpacing: 1 }}>{t.appTitle}</div>
               <div style={{ fontSize: 12, color: GOLD2 }}>{t.appSub}</div>
@@ -573,17 +537,17 @@ export default function App({ user, profile, onLogout }) {
         {/* Nav */}
 <div style={{ display: "flex", gap: 2, marginBottom: 28, background: DARK2, borderRadius: 8, padding: 4, border: "1px solid " + BORDER }}>
   {[
-    ["register","REGISTER", ["admin","staff","customer"]],
-    ["check","CHECK STATUS", ["admin","staff","customer"]],
-    ["admin","ADMIN", ["admin"]],
-    ["users","USERS", ["admin"]],
+    ["register", "REGISTER", ["admin","staff","customer"]],
+    ["check", "CHECK STATUS", ["admin","staff","customer"]],
+    ["admin", "ADMIN", ["admin","staff"]],
+    ["users", "USERS", ["admin"]],
   ].filter(([,, roles]) => roles.includes(profile?.role || "customer")).map(([p, label]) => (
-            <button key={p} onClick={() => { setPage(p); setSuccess(null); }}
-              style={page === p ? btnGoldActive : { ...btnGold, background: "#fff", color: "#64748b", border: "1px solid #e2e8f0" }}>
-              {icon} {p === "register" ? t.navRegister : p === "check" ? t.navCheck : t.navAdmin}
-            </button>
-          ))}
-        </div>
+    <button key={p} onClick={() => { setPage(p); setSuccess(null); }}
+      style={{ flex: 1, padding: "10px", borderRadius: 6, border: "none", background: page === p ? GOLD : "transparent", color: page === p ? DARK : TEXT2, fontWeight: page === p ? 700 : 400, fontSize: 12, cursor: "pointer", letterSpacing: "0.08em", transition: "all 0.2s" }}>
+      {label}
+    </button>
+  ))}
+</div>
 
         {/* ===== REGISTER ===== */}
         {page === "register" && (
