@@ -53,7 +53,7 @@ const CONTENT = {
     sections: [
       {
         title: "1. General Information",
-        body: "Royal Engineering Service Co., Ltd. ("Company"), as a data controller, is committed to protecting your personal data in accordance with the Personal Data Protection Act B.E. 2562 (PDPA). This policy describes how we collect, use, and disclose your personal data."
+        body: "Royal Engineering Service Co., Ltd. ('Company'), as a data controller, is committed to protecting your personal data in accordance with the Personal Data Protection Act B.E. 2562 (PDPA). This policy describes how we collect, use, and disclose your personal data."
       },
       {
         title: "2. Data We Collect",
@@ -93,7 +93,7 @@ const CONTENT = {
     sections: [
       {
         title: "1. 基本信息",
-        body: "皇家工程服务有限公司（"本公司"）作为个人数据控制者，致力于依据《个人数据保护法》B.E. 2562（PDPA）保护您的个人数据。本政策说明我们如何收集、使用和披露您的个人数据。"
+        body: "皇家工程服务有限公司（'本公司'）作为个人数据控制者，致力于依据《个人数据保护法》B.E. 2562（PDPA）保护您的个人数据。本政策说明我们如何收集、使用和披露您的个人数据。"
       },
       {
         title: "2. 我们收集的数据",
