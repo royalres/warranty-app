@@ -516,7 +516,13 @@ const { error } = await supabase.from("registrations").insert([rec]);
       <div style={{ background: DARK, padding: "12px 24px", borderBottom: "1px solid " + BORDER, position: "sticky", top: 0, zIndex: 100 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
           {/* Logo */}
-          <img src="/res-logo.png" alt="Royal Group" style={{ height: 44, objectFit: "contain", flexShrink: 0 }} />
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+  <img src="/res-logo.png" alt="Royal Group" style={{ height: 44, objectFit: "contain", flexShrink: 0 }} />
+  <div style={{ borderLeft: "1px solid " + BORDER, paddingLeft: 14 }}>
+    <div style={{ fontWeight: 700, fontSize: 16, color: GOLD, letterSpacing: 1 }}>Royal Group</div>
+    <div style={{ fontSize: 11, color: TEXT2, marginTop: 2 }}>{t.appSub}</div>
+  </div>
+</div>
 
           {/* User Info */}
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginLeft: "auto" }}>
