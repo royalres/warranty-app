@@ -1,6 +1,7 @@
 export function exportToCSV(records) {
   const headers = [
     "รหัส", "ประเภท", "ชื่อ-นามสกุล/บริษัท", "เบอร์โทร", "อีเมล", "ที่อยู่",
+    "เลขบัตรประชาชน", "เลขผู้เสียภาษี",
     "สินค้า", "ยี่ห้อ", "รุ่น", "เลขซีเรียล", "วันที่ซื้อ", "ระยะประกัน (เดือน)",
     "วันหมดประกัน", "เลขที่ใบกำกับภาษี", "PM", "กำหนด PM ครั้งถัดไป", "ผู้รับผิดชอบ PM"
   ];
@@ -37,9 +38,14 @@ export function exportToCSV(records) {
     const addr = r.type === "personal" ? fmtAddr(r.addr) : fmtAddr(r.companyAddr);
     const brand = r.brand === "Other" ? (r.brandOther || "Other") : (r.brand || "-");
 
+    // ใส่ apostrophe นำหน้าตัวเลขยาว เพื่อบังคับ Excel แสดงเป็น Text
+    const idCard = r.idCard ? `'${r.idCard}` : "-";
+    const taxId = r.taxId ? `'${r.taxId}` : "-";
+
     return [
       r.id, r.type === "personal" ? "บุคคลทั่วไป" : "บริษัท",
       name.trim(), phone, email, addr,
+      idCard, taxId,
       r.productType || "-", brand, r.model || "-", r.serial || "-",
       r.purchaseDate || "-", r.warrantyMonths || "-",
       r.purchaseDate ? expDate(r.purchaseDate, r.warrantyMonths) : "-",
