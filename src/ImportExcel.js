@@ -10,11 +10,6 @@ const BORDER = "#1e3a5f";
 const TEXT = "#e8edf5";
 const TEXT2 = "#7a9cc0";
 
-const inp = {
-  width: "100%", padding: "10px 14px", borderRadius: 6,
-  border: "1px solid " + BORDER, background: DARK3,
-  color: TEXT, fontSize: 14, boxSizing: "border-box",
-};
 
 function genId() { return "WR" + Date.now().toString().slice(-8) + Math.floor(Math.random() * 100); }
 
