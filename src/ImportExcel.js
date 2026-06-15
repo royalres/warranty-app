@@ -11,7 +11,7 @@ const TEXT = "#e8edf5";
 const TEXT2 = "#7a9cc0";
 
 
-function genId() { return "WR" + Date.now().toString().slice(-8) + Math.floor(Math.random() * 100); }
+function genId() { return "WR" + Date.now().toString().slice(-8) + Math.floor(Math.random() * 10000).toString().padStart(4, "0"); }
 
 // แปลงวันที่จาก Excel หลายรูปแบบ
 function parseDate(val) {
