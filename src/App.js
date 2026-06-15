@@ -236,7 +236,7 @@ const initialForm = {
   firstName:"",lastName:"",idCard:"",phone:"",email:"",addr:{...emptyAddr},
   companyType:"",companyName:"",branchType:"HQ",branchNo:"",taxId:"",
   companyPhone:"",contactFirstName:"",contactLastName:"",companyEmail:"",companyAddr:{...emptyAddr},
-  productType:"",brand:"",brandOther:"",serial:"",model:"",purchaseDate:"",warrantyMonths:"12",receipt:""
+  productType: "", brand: "", brandOther: "", installationSite: "", serial:"",model:"",purchaseDate:"",warrantyMonths:"12",receipt:""
 };
 
 function toDb(form, id) {
@@ -252,6 +252,7 @@ function toDb(form, id) {
     product_type: form.productType, brand: form.brand, brand_other: form.brandOther,
     serial: form.serial, model: form.model, purchase_date: form.purchaseDate,
     warranty_months: Number(form.warrantyMonths), receipt: form.receipt,
+    installation_site: form.installationSite || "",
     pm: { required: false, schedules: [] }
   };
 }
@@ -274,6 +275,7 @@ function fromDb(r) {
     productType: r.product_type, brand: r.brand, brandOther: r.brand_other,
     serial: r.serial, model: r.model, purchaseDate: r.purchase_date,
     warrantyMonths: String(r.warranty_months), receipt: r.receipt,
+    installationSite: r.installation_site || "",
     pm: { required: pm.required || false, schedules },
     createdAt: r.created_at
   };
@@ -426,6 +428,8 @@ export default function App({ user, profile, onLogout }) {
   const [activeTab, setActiveTab] = useState("info");
   const [pmEdit, setPmEdit] = useState(null);
   const [pmSaved, setPmSaved] = useState(false);
+  const [editSite, setEditSite] = useState(false);
+  const [siteValue, setSiteValue] = useState("");
   const [pdpaConsent, setPdpaConsent] = useState(false);
 const [showPrivacy, setShowPrivacy] = useState(false);
 
@@ -734,6 +738,7 @@ const { error } = await supabase.from("registrations").insert([rec]);
                     [t.fldWarranty, fmtWarranty(checkResult.warrantyMonths, t)],
                     [t.fldExpire, (() => { const d = new Date(checkResult.purchaseDate); d.setMonth(d.getMonth() + Number(checkResult.warrantyMonths)); return d.toLocaleDateString("th-TH"); })()],
                     [t.fldReceipt, checkResult.receipt || "-"],
+                    ["สถานที่ติดตั้ง", checkResult.installationSite || "-"],
                   ].map(([k, v]) => (
                     <div key={k} style={{ background: DARK3, borderRadius: 6, padding: "10px 14px", border: "1px solid " + BORDER }}>
                       <div style={{ fontSize: 10, color: TEXT2, marginBottom: 4, letterSpacing: "0.08em", textTransform: "uppercase" }}>{k}</div>
@@ -782,7 +787,7 @@ const { error } = await supabase.from("registrations").insert([rec]);
             </button>
           </div>
         )}
-        
+
 {/* ===== IMPORT ===== */}
         {page === "import" && profile?.role === "admin" && (
           <div>
@@ -943,6 +948,40 @@ const { error } = await supabase.from("registrations").insert([rec]);
                       [t.fldWarranty, fmtWarranty(viewRecord.warrantyMonths, t)],
                       [t.fldExpire, (() => { const d = new Date(viewRecord.purchaseDate); d.setMonth(d.getMonth() + Number(viewRecord.warrantyMonths)); return d.toLocaleDateString("th-TH"); })()],
                       [t.fldReceipt, viewRecord.receipt || "-"],
+                      {/* สถานที่ติดตั้ง — Admin/Staff เท่านั้น */}
+              <div style={{ marginTop: 16, background: DARK3, borderRadius: 8, padding: "14px 16px", border: "1px solid " + BORDER }}>
+                <div style={{ fontSize: 10, color: TEXT2, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 8 }}>สถานที่ติดตั้ง</div>
+                {editSite ? (
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <input value={siteValue} onChange={e => setSiteValue(e.target.value)}
+                      style={{ flex: 1, padding: "8px 12px", borderRadius: 6, border: "1px solid " + BORDER, background: DARK2, color: TEXT, fontSize: 14 }}
+                      placeholder="กรอกสถานที่ติดตั้ง" />
+                    <button onClick={async () => {
+                      await supabase.from("registrations").update({ installation_site: siteValue }).eq("id", viewRecord.id);
+                      setViewRecord({ ...viewRecord, installationSite: siteValue });
+                      setRecords(rs => rs.map(r => r.id === viewRecord.id ? { ...r, installationSite: siteValue } : r));
+                      setEditSite(false);
+                    }} style={{ padding: "8px 16px", borderRadius: 6, border: "none", background: GOLD, color: DARK, fontWeight: 700, fontSize: 12, cursor: "pointer" }}>
+                      SAVE
+                    </button>
+                    <button onClick={() => setEditSite(false)}
+                      style={{ padding: "8px 16px", borderRadius: 6, border: "1px solid " + BORDER, background: "transparent", color: TEXT2, fontSize: 12, cursor: "pointer" }}>
+                      CANCEL
+                    </button>
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div style={{ fontSize: 14, color: TEXT }}>{viewRecord.installationSite || "-"}</div>
+                    {(profile?.role === "admin" || profile?.role === "staff") && (
+                      <button onClick={() => { setEditSite(true); setSiteValue(viewRecord.installationSite || ""); }}
+                        style={{ padding: "5px 12px", borderRadius: 4, border: "1px solid " + BORDER, background: DARK, color: GOLD, fontSize: 11, cursor: "pointer", fontWeight: 600, letterSpacing: "0.06em" }}>
+                        EDIT
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+                      ["สถานที่ติดตั้ง", viewRecord.installationSite || "-"],
                     ].map(([k, v]) => (
                       <div key={k}>
                         <div style={{ fontSize: 12, color: "#64748b" }}>{k}</div>
