@@ -99,7 +99,18 @@ function rowToRecord(row) {
     purchase_date: parseDate(row["วันที่ซื้อ"] || row["purchase_date"]),
     warranty_months: parseWarranty(row["ระยะประกัน"] || row["warranty_months"]),
     receipt: String(row["เลขใบกำกับภาษี"] || row["receipt"] || ""),
-    pm: { required: false, schedules: [] },
+    pm: (() => {
+      const required = String(row["ต้องการ PM"] || "").includes("ต้องการ") &&
+                       !String(row["ต้องการ PM"] || "").includes("ไม่");
+      const schedules = [];
+      for (let i = 1; i <= 5; i++) {
+        const date = parseDate(row[`PM ครั้งที่ ${i} วันที่`]);
+        const assignee = String(row[`PM ครั้งที่ ${i} ผู้รับผิดชอบ`] || "");
+        const note = String(row[`PM ครั้งที่ ${i} หมายเหตุ`] || "");
+        if (date) schedules.push({ date, assignee, note });
+      }
+      return { required, schedules };
+    })(),
     pdpa_consent: true,
     pdpa_consent_at: new Date().toISOString(),
     created_at: new Date().toISOString(),
