@@ -28,7 +28,7 @@ function pmDaysLeft(pmDate) {
 const T = {
   th: {
     appTitle: "Royal Group", appSub: "ระบบรับประกันสินค้า | Warranty Registration",
-    navRegister: "ลงทะเบียน", navCheck: "ตรวจสอบ", navAdmin: "แอดมิน",
+    navRegister: "ลงทะเบียน", navCheck: "ตรวจสอบ", navAdmin: "แอดมิน", navUsers: "ผู้ใช้งาน",
     personal: "บุคคลทั่วไป", company: "นิติบุคคล / บริษัท",
     sectionPersonal: "ข้อมูลบุคคลทั่วไป", sectionCompany: "ข้อมูลบริษัท", sectionProduct: "ข้อมูลสินค้า",
     firstName: "ชื่อ", lastName: "นามสกุล", idCard: "เลขบัตรประจำตัวประชาชน",
@@ -87,7 +87,7 @@ const T = {
   },
   en: {
     appTitle: "Royal Group", appSub: "Warranty Registration System",
-    navRegister: "Register", navCheck: "Check Status", navAdmin: "Admin",
+    navRegister: "Register", navCheck: "Check Status", navAdmin: "Admin", navUsers: "Users",
     personal: "Individual", company: "Company / Business",
     sectionPersonal: "Personal Information", sectionCompany: "Company Information", sectionProduct: "Product Information",
     firstName: "First Name", lastName: "Last Name", idCard: "National ID Card",
@@ -145,7 +145,7 @@ const T = {
   },
   zh: {
     appTitle: "Royal Group", appSub: "产品质保登记系统",
-    navRegister: "登记注册", navCheck: "查询状态", navAdmin: "管理员",
+    navRegister: "登记注册", navCheck: "查询状态", navAdmin: "管理员", navUsers: "用户管理",
     personal: "个人客户", company: "企业客户",
     sectionPersonal: "个人信息", sectionCompany: "公司信息", sectionProduct: "产品信息",
     firstName: "名字", lastName: "姓氏", idCard: "身份证号码",
@@ -562,10 +562,10 @@ const { error } = await supabase.from("registrations").insert([rec]);
         {/* Nav */}
 <div style={{ display: "flex", gap: 2, marginBottom: 28, background: DARK2, borderRadius: 8, padding: 4, border: "1px solid " + BORDER }}>
   {[
-    ["register", "REGISTER", ["admin","staff","customer"]],
-    ["check", "CHECK STATUS", ["admin","staff","customer"]],
-    ["admin", "ADMIN", ["admin","staff"]],
-    ["users", "USERS", ["admin"]],
+    ["register", t.navRegister, ["admin","staff","customer"]],
+["check", t.navCheck, ["admin","staff","customer"]],
+["admin", t.navAdmin, ["admin","staff"]],
+["users", t.navUsers, ["admin"]],
   ].filter(([,, roles]) => roles.includes(profile?.role || "customer")).map(([p, label]) => (
     <button key={p} onClick={() => { setPage(p); setSuccess(null); }}
       style={{ flex: 1, padding: "10px", borderRadius: 6, border: "none", background: page === p ? GOLD : "transparent", color: page === p ? DARK : TEXT2, fontWeight: page === p ? 700 : 400, fontSize: 12, cursor: "pointer", letterSpacing: "0.08em", transition: "all 0.2s" }}>
