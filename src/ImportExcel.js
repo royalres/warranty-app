@@ -99,6 +99,7 @@ function rowToRecord(row) {
     purchase_date: parseDate(row["วันที่ซื้อ"] || row["purchase_date"]),
     warranty_months: parseWarranty(row["ระยะประกัน"] || row["warranty_months"]),
     receipt: String(row["เลขใบกำกับภาษี"] || row["receipt"] || ""),
+    installation_site: String(row["สถานที่ติดตั้ง"] || row["installation_site"] || ""),
     pm: (() => {
       const required = String(row["ต้องการ PM"] || "").includes("ต้องการ") &&
                        !String(row["ต้องการ PM"] || "").includes("ไม่");
