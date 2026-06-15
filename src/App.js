@@ -1027,51 +1027,61 @@ const { error } = await supabase.from("registrations").insert([rec]);
     )}
   </div>
   <div style={{ display: "flex", gap: 6 }}>
-    {!s.confirmed && (profile?.role === "admin" || profile?.role === "staff") && (
-      <button onClick={async () => {
-        const updated = [...pmEdit.schedules];
-        updated[i] = { ...s, confirmed: true, confirmed_at: new Date().toISOString() };
-        const newPm = { ...pmEdit, schedules: updated };
-        await supabase.from("registrations").update({ pm: newPm }).eq("id", viewRecord.id);
-        setPmEdit(newPm);
-        setViewRecord({ ...viewRecord, pm: newPm });
-        setRecords(rs => rs.map(r => r.id === viewRecord.id ? { ...r, pm: newPm } : r));
-      }} style={{ background: "#0d2818", border: "1px solid #166534", color: "#4ade80", borderRadius: 4, padding: "4px 10px", fontSize: 11, cursor: "pointer", fontWeight: 600 }}>
-        ✓ CONFIRM PM <button onClick={async () => {
-      const email = prompt("กรอก Email ที่ต้องการส่ง Calendar:");
-      if (!email) return;
-      try {
-        const res = await fetch(
-          `${process.env.REACT_APP_SUPABASE_URL}/functions/v1/send-calendar-email`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${process.env.REACT_APP_SUPABASE_ANON_KEY}`,
-            },
-            body: JSON.stringify({
-              to: email,
-              pmDate: s.date,
-              serialNo: viewRecord.serial,
-              model: viewRecord.model,
-              installationSite: viewRecord.installationSite || "-",
-              assignee: s.assignee || "-",
-              note: s.note || "",
-              pmIndex: i + 1,
-              registrationId: viewRecord.id,
-            }),
-          }
-        );
-        const data = await res.json();
-        if (data.success) alert("✓ ส่ง Email Calendar สำเร็จ!");
-        else alert("✗ เกิดข้อผิดพลาด: " + JSON.stringify(data));
-      } catch (err) {
-        alert("✗ เกิดข้อผิดพลาด: " + err.message);
-      }
-    }} style={{ background: "#0d1f3c", border: "1px solid #1e3a5f", color: "#60a5fa", borderRadius: 4, padding: "4px 10px", fontSize: 11, cursor: "pointer", fontWeight: 600 }}>
-      📅 ส่ง Email
-    </button>
-      </button>
+   {!s.confirmed && (profile?.role === "admin" || profile?.role === "staff") && (
+  <button onClick={async () => {
+    const updated = [...pmEdit.schedules];
+    updated[i] = { ...s, confirmed: true, confirmed_at: new Date().toISOString() };
+    const newPm = { ...pmEdit, schedules: updated };
+    await supabase.from("registrations").update({ pm: newPm }).eq("id", viewRecord.id);
+    setPmEdit(newPm);
+    setViewRecord({ ...viewRecord, pm: newPm });
+    setRecords(rs => rs.map(r => r.id === viewRecord.id ? { ...r, pm: newPm } : r));
+  }} style={{ background: "#0d2818", border: "1px solid #166534", color: "#4ade80", borderRadius: 4, padding: "4px 10px", fontSize: 11, cursor: "pointer", fontWeight: 600 }}>
+    ✓ CONFIRM PM
+  </button>
+)}
+
+<button onClick={async () => {
+  const emailInput = pmEmails[i] || "";
+  if (!emailInput) { alert("กรุณากรอก Email ในช่องด้านบนก่อนครับ"); return; }
+  const emailList = emailInput.split(",").map(e => e.trim()).filter(Boolean);
+  if (emailList.length === 0) { alert("กรุณากรอก Email ที่ถูกต้องครับ"); return; }
+  setSendingEmail({ ...sendingEmail, [i]: true });
+  let successCount = 0;
+  for (const email of emailList) {
+    try {
+      const res = await fetch(
+        `${process.env.REACT_APP_SUPABASE_URL}/functions/v1/send-calendar-email`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${process.env.REACT_APP_SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({
+            to: email,
+            pmDate: s.date,
+            serialNo: viewRecord.serial,
+            model: viewRecord.model,
+            installationSite: viewRecord.installationSite || "-",
+            assignee: s.assignee || "-",
+            note: s.note || "",
+            pmIndex: i + 1,
+            registrationId: viewRecord.id,
+          }),
+        }
+      );
+      const data = await res.json();
+      if (data.success) successCount++;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  setSendingEmail({ ...sendingEmail, [i]: false });
+  alert(`✓ ส่ง Email สำเร็จ ${successCount}/${emailList.length} รายการ`);
+}} style={{ background: "#0d1f3c", border: "1px solid #1e3a5f", color: "#60a5fa", borderRadius: 4, padding: "4px 10px", fontSize: 11, cursor: sendingEmail[i] ? "not-allowed" : "pointer", fontWeight: 600, opacity: sendingEmail[i] ? 0.6 : 1 }}>
+  {sendingEmail[i] ? "กำลังส่ง..." : "📅 ส่ง Email"}
+</button>
       
     )}
     <button onClick={() => { const updated = pmEdit.schedules.filter((_, idx) => idx !== i); setPmEdit({ ...pmEdit, schedules: updated }); }}
@@ -1092,6 +1102,16 @@ const { error } = await supabase.from("registrations").insert([rec]);
                                   <textarea value={s.note || ""} onChange={e => { const updated = [...pmEdit.schedules]; updated[i] = { ...s, note: e.target.value }; setPmEdit({ ...pmEdit, schedules: updated }); }}
                                     rows={2} placeholder="รายละเอียดการ PM..." style={{ ...inp, resize: "vertical" }} />
                                 </Field>
+                                <div style={s2}>
+  <Field label="📧 Email สำหรับส่ง Calendar (คั่นด้วย , สำหรับหลาย Email)">
+    <input
+      value={pmEmails[i] || ""}
+      onChange={e => setPmEmails({ ...pmEmails, [i]: e.target.value })}
+      placeholder="email1@example.com, email2@example.com"
+      style={inp}
+    />
+  </Field>
+</div>
                               </div>
                             </div>
                           </div>
