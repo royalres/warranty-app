@@ -3,7 +3,7 @@ export function exportToCSV(records) {
     "รหัส", "ประเภท", "ชื่อ-นามสกุล/บริษัท", "เบอร์โทร", "อีเมล", "ที่อยู่",
     "เลขบัตรประชาชน", "เลขผู้เสียภาษี",
     "สินค้า", "ยี่ห้อ", "รุ่น", "เลขซีเรียล", "วันที่ซื้อ", "ระยะประกัน (เดือน)",
-    "วันหมดประกัน", "เลขที่ใบกำกับภาษี", "PM", "กำหนด PM ครั้งถัดไป", "ผู้รับผิดชอบ PM"
+    "วันหมดประกัน", "เลขที่ใบกำกับภาษี", "สถานที่ติดตั้ง", "PM", "กำหนด PM ทั้งหมด"
   ];
 
   function fmtAddr(a) {
@@ -17,16 +17,12 @@ export function exportToCSV(records) {
     return d.toLocaleDateString("th-TH");
   }
 
-  function nearestPM(pm) {
+  function allPMSchedules(pm) {
     if (!pm || !pm.schedules || pm.schedules.length === 0) return "-";
-    const dates = pm.schedules.map(s => s.date).filter(Boolean).sort();
-    return dates[0] || "-";
-  }
-
-  function nearestAssignee(pm) {
-    if (!pm || !pm.schedules || pm.schedules.length === 0) return "-";
-    const sorted = pm.schedules.filter(s => s.date).sort((a, b) => a.date.localeCompare(b.date));
-    return sorted[0]?.assignee || "-";
+    return pm.schedules
+      .filter(s => s.date)
+      .map((s, i) => `ครั้งที่ ${i + 1}: ${s.date} (${s.assignee || "-"}) ${s.note ? "| " + s.note : ""}`)
+      .join(" | ");
   }
 
   const rows = records.map(r => {
@@ -50,8 +46,9 @@ export function exportToCSV(records) {
       r.purchaseDate || "-", r.warrantyMonths || "-",
       r.purchaseDate ? expDate(r.purchaseDate, r.warrantyMonths) : "-",
       r.receipt || "-",
+      r.installationSite || "-",
       r.pm?.required ? "ต้องการ PM" : "ไม่มี PM",
-      nearestPM(r.pm), nearestAssignee(r.pm)
+      allPMSchedules(r.pm)
     ].map(v => `"${String(v).replace(/"/g, '""')}"`);
   });
 
