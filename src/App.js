@@ -535,7 +535,7 @@ export default function App() {
       <div style={{ background: DARK, padding: "18px 24px", marginBottom: 0, borderBottom: "2px solid " + GOLD }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <div style={{ width: 50, height: 50, borderRadius: "50%", border: "2px solid " + GOLD, background: DARK, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>👑</div>
+            <div style={{ width: 50, height: 50, borderRadius: "50%", border: "2px solid " + GOLD, background: DARK, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}><img src="/logo.png" alt="Royal Group" style={{ width: 46, height: 46, borderRadius: "50%", objectFit: "cover" }} /></div>
             <div>
               <div style={{ fontWeight: 700, fontSize: 20, color: GOLD, letterSpacing: 1 }}>{t.appTitle}</div>
               <div style={{ fontSize: 12, color: GOLD2 }}>{t.appSub}</div>
