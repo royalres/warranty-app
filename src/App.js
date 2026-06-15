@@ -692,7 +692,7 @@ const { error } = await supabase.from("registrations").insert([rec]);
               </label>
             </div>
 
-            {showPrivacy && <PrivacyPolicy onClose={() => setShowPrivacy(false)} />}
+            {showPrivacy && <PrivacyPolicy onClose={() => setShowPrivacy(false)} lang={lang} />}
             <button onClick={handleSubmit} disabled={submitting}
               style={{ width: "100%", padding: "14px", borderRadius: 6, background: submitting ? DARK3 : GOLD, color: submitting ? TEXT2 : DARK, fontWeight: 700, fontSize: 13, cursor: submitting ? "not-allowed" : "pointer", border: "none", letterSpacing: "0.1em", textTransform: "uppercase", transition: "all 0.2s" }}>
               {submitting ? t.saving : "— " + t.submitBtn + " —"}
