@@ -3,7 +3,12 @@ export function exportToCSV(records) {
     "รหัส", "ประเภท", "ชื่อ-นามสกุล/บริษัท", "เบอร์โทร", "อีเมล", "ที่อยู่",
     "เลขบัตรประชาชน", "เลขผู้เสียภาษี",
     "สินค้า", "ยี่ห้อ", "รุ่น", "เลขซีเรียล", "วันที่ซื้อ", "ระยะประกัน (เดือน)",
-    "วันหมดประกัน", "เลขที่ใบกำกับภาษี", "สถานที่ติดตั้ง", "PM", "กำหนด PM ทั้งหมด"
+    "วันหมดประกัน", "เลขที่ใบกำกับภาษี", "สถานที่ติดตั้ง", "ต้องการ PM",
+    "PM ครั้งที่ 1 วันที่", "PM ครั้งที่ 1 ผู้รับผิดชอบ", "PM ครั้งที่ 1 หมายเหตุ",
+    "PM ครั้งที่ 2 วันที่", "PM ครั้งที่ 2 ผู้รับผิดชอบ", "PM ครั้งที่ 2 หมายเหตุ",
+    "PM ครั้งที่ 3 วันที่", "PM ครั้งที่ 3 ผู้รับผิดชอบ", "PM ครั้งที่ 3 หมายเหตุ",
+    "PM ครั้งที่ 4 วันที่", "PM ครั้งที่ 4 ผู้รับผิดชอบ", "PM ครั้งที่ 4 หมายเหตุ",
+    "PM ครั้งที่ 5 วันที่", "PM ครั้งที่ 5 ผู้รับผิดชอบ", "PM ครั้งที่ 5 หมายเหตุ",
   ];
 
   function fmtAddr(a) {
@@ -17,12 +22,15 @@ export function exportToCSV(records) {
     return d.toLocaleDateString("th-TH");
   }
 
-  function allPMSchedules(pm) {
-    if (!pm || !pm.schedules || pm.schedules.length === 0) return "-";
-    return pm.schedules
-      .filter(s => s.date)
-      .map((s, i) => `ครั้งที่ ${i + 1}: ${s.date} (${s.assignee || "-"}) ${s.note ? "| " + s.note : ""}`)
-      .join(" | ");
+  function pmColumns(pm) {
+    const cols = [];
+    for (let i = 0; i < 5; i++) {
+      const s = pm?.schedules?.[i];
+      cols.push(s?.date || "-");
+      cols.push(s?.assignee || "-");
+      cols.push(s?.note || "-");
+    }
+    return cols;
   }
 
   const rows = records.map(r => {
@@ -48,7 +56,7 @@ export function exportToCSV(records) {
       r.receipt || "-",
       r.installationSite || "-",
       r.pm?.required ? "ต้องการ PM" : "ไม่มี PM",
-      allPMSchedules(r.pm)
+      ...pmColumns(r.pm)
     ].map(v => `"${String(v).replace(/"/g, '""')}"`);
   });
 
