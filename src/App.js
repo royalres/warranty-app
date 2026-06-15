@@ -948,7 +948,18 @@ const { error } = await supabase.from("registrations").insert([rec]);
                       [t.fldWarranty, fmtWarranty(viewRecord.warrantyMonths, t)],
                       [t.fldExpire, (() => { const d = new Date(viewRecord.purchaseDate); d.setMonth(d.getMonth() + Number(viewRecord.warrantyMonths)); return d.toLocaleDateString("th-TH"); })()],
                       [t.fldReceipt, viewRecord.receipt || "-"],
-                      {/* สถานที่ติดตั้ง — Admin/Staff เท่านั้น */}
+                      ["สถานที่ติดตั้ง", viewRecord.installationSite || "-"],
+                    ].map(([k, v]) => (
+                      <div key={k}>
+                        <div style={{ fontSize: 12, color: "#64748b" }}>{k}</div>
+                        <div style={{ fontSize: 14, fontWeight: 500 }}>{v}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+{/* สถานที่ติดตั้ง */}
               <div style={{ marginTop: 16, background: DARK3, borderRadius: 8, padding: "14px 16px", border: "1px solid " + BORDER }}>
                 <div style={{ fontSize: 10, color: TEXT2, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 8 }}>สถานที่ติดตั้ง</div>
                 {editSite ? (
@@ -981,18 +992,6 @@ const { error } = await supabase.from("registrations").insert([rec]);
                   </div>
                 )}
               </div>
-                      ["สถานที่ติดตั้ง", viewRecord.installationSite || "-"],
-                    ].map(([k, v]) => (
-                      <div key={k}>
-                        <div style={{ fontSize: 12, color: "#64748b" }}>{k}</div>
-                        <div style={{ fontSize: 14, fontWeight: 500 }}>{v}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-
             {activeTab === "pm" && (
               <div>
                 {pmSaved && <div style={{ padding: "12px 16px", borderRadius: 10, marginBottom: 16, background: "#dcfce7", color: "#15803d", border: "1px solid #86efac" }}>✓ {t.pmSaved}</div>}
