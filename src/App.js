@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "./supabaseClient";
+import UserManager from "./UserManager";
+import { exportToCSV } from "./ExportExcel";
 
 const GOLD = "#c9a84c";
 const DARK = "#0d0d0d";
@@ -569,8 +571,13 @@ export default function App({ user, profile, onLogout }) {
 
       <div style={{ padding: "1.5rem 1rem" }}>
         {/* Nav */}
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 28 }}>
-          {[["register","📋"],["check","🔍"],["admin","📊"]].map(([p, icon]) => (
+<div style={{ display: "flex", gap: 2, marginBottom: 28, background: DARK2, borderRadius: 8, padding: 4, border: "1px solid " + BORDER }}>
+  {[
+    ["register","REGISTER", ["admin","staff","customer"]],
+    ["check","CHECK STATUS", ["admin","staff","customer"]],
+    ["admin","ADMIN", ["admin"]],
+    ["users","USERS", ["admin"]],
+  ].filter(([,, roles]) => roles.includes(profile?.role || "customer")).map(([p, label]) => (
             <button key={p} onClick={() => { setPage(p); setSuccess(null); }}
               style={page === p ? btnGoldActive : { ...btnGold, background: "#fff", color: "#64748b", border: "1px solid #e2e8f0" }}>
               {icon} {p === "register" ? t.navRegister : p === "check" ? t.navCheck : t.navAdmin}
@@ -770,6 +777,13 @@ export default function App({ user, profile, onLogout }) {
           </div>
         )}
 
+        {/* ===== USERS ===== */}
+        {page === "users" && profile?.role === "admin" && (
+          <div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: GOLD, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 20 }}>◆ USER MANAGEMENT</div>
+            <UserManager />
+          </div>
+        )}
         {/* ===== ADMIN DASHBOARD ===== */}
         {page === "admin" && adminAuth && !viewRecord && (
           <div>
@@ -827,6 +841,10 @@ export default function App({ user, profile, onLogout }) {
                     );
                   })}
                 </div>
+                <button onClick={() => exportToCSV(filtered)}
+                  style={{ marginTop: 14, width: "100%", padding: "11px", borderRadius: 6, border: "1px solid " + BORDER, background: DARK2, color: GOLD, fontWeight: 700, fontSize: 12, cursor: "pointer", letterSpacing: "0.08em" }}>
+                  ↓ EXPORT CSV
+                </button>
                 <div style={{ marginTop: 10, fontSize: 11, color: TEXT2, letterSpacing: "0.05em" }}>{t.showing(filtered.length, records.length)}</div>
               </div>
             )}
