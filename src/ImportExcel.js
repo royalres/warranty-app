@@ -104,7 +104,7 @@ function rowToRecord(row) {
       const required = String(row["ต้องการ PM"] || "").includes("ต้องการ") &&
                        !String(row["ต้องการ PM"] || "").includes("ไม่");
       const schedules = [];
-      for (let i = 1; i <= 5; i++) {
+      for (let i = 1; i <= 20; i++) {
         const date = parseDate(row[`PM ครั้งที่ ${i} วันที่`]);
         const assignee = String(row[`PM ครั้งที่ ${i} ผู้รับผิดชอบ`] || "");
         const note = String(row[`PM ครั้งที่ ${i} หมายเหตุ`] || "");

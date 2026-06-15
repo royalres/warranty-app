@@ -24,7 +24,7 @@ export function exportToCSV(records) {
 
   function pmColumns(pm) {
     const cols = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 20; i++) {
       const s = pm?.schedules?.[i];
       cols.push(s?.date || "-");
       cols.push(s?.assignee || "-");
