@@ -1037,8 +1037,42 @@ const { error } = await supabase.from("registrations").insert([rec]);
         setViewRecord({ ...viewRecord, pm: newPm });
         setRecords(rs => rs.map(r => r.id === viewRecord.id ? { ...r, pm: newPm } : r));
       }} style={{ background: "#0d2818", border: "1px solid #166534", color: "#4ade80", borderRadius: 4, padding: "4px 10px", fontSize: 11, cursor: "pointer", fontWeight: 600 }}>
-        ✓ CONFIRM PM
+        ✓ CONFIRM PM <button onClick={async () => {
+      const email = prompt("กรอก Email ที่ต้องการส่ง Calendar:");
+      if (!email) return;
+      try {
+        const res = await fetch(
+          `${process.env.REACT_APP_SUPABASE_URL}/functions/v1/send-calendar-email`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${process.env.REACT_APP_SUPABASE_ANON_KEY}`,
+            },
+            body: JSON.stringify({
+              to: email,
+              pmDate: s.date,
+              serialNo: viewRecord.serial,
+              model: viewRecord.model,
+              installationSite: viewRecord.installationSite || "-",
+              assignee: s.assignee || "-",
+              note: s.note || "",
+              pmIndex: i + 1,
+              registrationId: viewRecord.id,
+            }),
+          }
+        );
+        const data = await res.json();
+        if (data.success) alert("✓ ส่ง Email Calendar สำเร็จ!");
+        else alert("✗ เกิดข้อผิดพลาด: " + JSON.stringify(data));
+      } catch (err) {
+        alert("✗ เกิดข้อผิดพลาด: " + err.message);
+      }
+    }} style={{ background: "#0d1f3c", border: "1px solid #1e3a5f", color: "#60a5fa", borderRadius: 4, padding: "4px 10px", fontSize: 11, cursor: "pointer", fontWeight: 600 }}>
+      📅 ส่ง Email
+    </button>
       </button>
+      
     )}
     <button onClick={() => { const updated = pmEdit.schedules.filter((_, idx) => idx !== i); setPmEdit({ ...pmEdit, schedules: updated }); }}
       style={{ background: "#2d0e0e", border: "1px solid #7f1d1d", color: "#f87171", borderRadius: 4, padding: "4px 10px", fontSize: 12, cursor: "pointer" }}>
