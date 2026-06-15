@@ -3,6 +3,7 @@ import { searchAddressByTambon, searchAddressByAmphoe, searchAddressByProvince, 
 import { supabase } from "./supabaseClient";
 import UserManager from "./UserManager";
 import { exportToCSV } from "./ExportExcel";
+import PrivacyPolicy from "./PrivacyPolicy";
 
 const GOLD = "#c9a84c";
 const DARK = "#0a1628";
@@ -418,6 +419,8 @@ export default function App({ user, profile, onLogout }) {
   const [activeTab, setActiveTab] = useState("info");
   const [pmEdit, setPmEdit] = useState(null);
   const [pmSaved, setPmSaved] = useState(false);
+  const [pdpaConsent, setPdpaConsent] = useState(false);
+const [showPrivacy, setShowPrivacy] = useState(false);
 
   async function loadRecords() {
     setLoading(true);
@@ -447,6 +450,7 @@ export default function App({ user, profile, onLogout }) {
       if (!/^\d{13}$/.test(form.taxId)) return t.errTaxId;
     }
     if (!form.productType || !form.brand || (form.brand === "Other" && !form.brandOther) || !form.serial || !form.model || !form.purchaseDate) return t.errProduct;
+    if (!pdpaConsent) return "กรุณายินยอมนโยบายความเป็นส่วนตัวก่อนลงทะเบียน";
     return null;
   }
 
@@ -455,7 +459,10 @@ export default function App({ user, profile, onLogout }) {
     if (err) { setSuccess({ ok: false, msg: err }); return; }
     setSubmitting(true);
     const id = genId();
-    const { error } = await supabase.from("registrations").insert([toDb(form, id)]);
+    const rec = toDb(form, id);
+rec.pdpa_consent = true;
+rec.pdpa_consent_at = new Date().toISOString();
+const { error } = await supabase.from("registrations").insert([rec]);
     if (error) { setSuccess({ ok: false, msg: error.message }); setSubmitting(false); return; }
     setSuccess({ ok: true, id });
     setForm(initialForm);
@@ -650,6 +657,23 @@ export default function App({ user, profile, onLogout }) {
               </div>
             </div>
 
+{/* PDPA Consent */}
+            <div style={{ background: DARK2, borderRadius: 8, padding: "16px 18px", marginBottom: 16, border: "1px solid " + BORDER }}>
+              <label style={{ display: "flex", gap: 12, alignItems: "flex-start", cursor: "pointer" }}>
+                <input type="checkbox" checked={pdpaConsent} onChange={e => setPdpaConsent(e.target.checked)}
+                  style={{ width: 16, height: 16, marginTop: 2, flexShrink: 0, accentColor: GOLD }} />
+                <span style={{ fontSize: 13, color: TEXT, lineHeight: 1.6 }}>
+                  ข้าพเจ้ายินยอมให้บริษัท รอยัล เอ็นจิเนียริ่ง เซอร์วิส จำกัด เก็บรวบรวมและใช้ข้อมูลส่วนบุคคลของข้าพเจ้า
+                  เพื่อวัตถุประสงค์ในการลงทะเบียนรับประกันสินค้าและการติดต่อที่เกี่ยวข้อง ตาม{" "}
+                  <span onClick={() => setShowPrivacy(true)}
+                    style={{ color: GOLD, textDecoration: "underline", cursor: "pointer", fontWeight: 600 }}>
+                    นโยบายความเป็นส่วนตัว
+                  </span>
+                </span>
+              </label>
+            </div>
+
+            {showPrivacy && <PrivacyPolicy onClose={() => setShowPrivacy(false)} />}
             <button onClick={handleSubmit} disabled={submitting}
               style={{ width: "100%", padding: "14px", borderRadius: 6, background: submitting ? DARK3 : GOLD, color: submitting ? TEXT2 : DARK, fontWeight: 700, fontSize: 13, cursor: submitting ? "not-allowed" : "pointer", border: "none", letterSpacing: "0.1em", textTransform: "uppercase", transition: "all 0.2s" }}>
               {submitting ? t.saving : "— " + t.submitBtn + " —"}
