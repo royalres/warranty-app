@@ -3,6 +3,7 @@ import { searchAddressByTambon, searchAddressByAmphoe, searchAddressByProvince, 
 import { supabase } from "./supabaseClient";
 import UserManager from "./UserManager";
 import { exportToCSV } from "./ExportExcel";
+import ImportExcel from "./ImportExcel";
 import PrivacyPolicy from "./PrivacyPolicy";
 
 const GOLD = "#c9a84c";
@@ -781,6 +782,16 @@ const { error } = await supabase.from("registrations").insert([rec]);
             </button>
           </div>
         )}
+        
+{/* ===== IMPORT ===== */}
+        {page === "import" && profile?.role === "admin" && (
+          <div>
+            <button onClick={() => setPage("admin")} style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", color: TEXT2, fontSize: 13, marginBottom: 20, letterSpacing: "0.06em" }}>
+              ← กลับ
+            </button>
+            <ImportExcel />
+          </div>
+        )}
 
         {/* ===== USERS ===== */}
         {page === "users" && profile?.role === "admin" && (
@@ -856,6 +867,10 @@ const { error } = await supabase.from("registrations").insert([rec]);
                     );
                   })}
                 </div>
+                <button onClick={() => setPage("import")}
+  style={{ marginTop: 14, width: "100%", padding: "11px", borderRadius: 6, border: "1px solid " + BORDER, background: DARK2, color: TEXT, fontWeight: 700, fontSize: 12, cursor: "pointer", letterSpacing: "0.08em", marginBottom: 8 }}>
+  ↑ IMPORT EXCEL / CSV
+</button>
                 <button onClick={() => exportToCSV(filtered)}
                   style={{ marginTop: 14, width: "100%", padding: "11px", borderRadius: 6, border: "1px solid " + BORDER, background: DARK2, color: GOLD, fontWeight: 700, fontSize: 12, cursor: "pointer", letterSpacing: "0.08em" }}>
                   ↓ EXPORT CSV
