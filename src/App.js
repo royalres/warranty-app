@@ -531,7 +531,6 @@ export default function App({ user, profile, onLogout }) {
 
   const btnGold = { padding: "10px 18px", borderRadius: 10, border: "2px solid " + GOLD, background: DARK, color: GOLD, fontWeight: 700, fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", gap: 8 };
   const btnGoldActive = { ...btnGold, background: GOLD, color: DARK };
-  const btnBlue = { padding: "8px 20px", borderRadius: 8, border: "1.5px solid " + GOLD, background: DARK, color: GOLD, cursor: "pointer", fontWeight: 700, whiteSpace: "nowrap" };
 
   return (
     <div style={{ fontFamily: "sans-serif", maxWidth: 720, margin: "0 auto", color: "#1e293b" }}>
