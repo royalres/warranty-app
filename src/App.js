@@ -1094,7 +1094,8 @@ const { error } = await supabase.from("registrations").insert([rec]);
 </div>
                             <div style={g2}>
                               <Field label={t.pmDate}>
-                                <Inp type="date" value={s.date || ""} onChange={e => { const updated = [...pmEdit.schedules]; updated[i] = { ...s, date: e.target.value }; setPmEdit({ ...pmEdit, schedules: updated }); }} />
+                                <input type="date" value={s.date || ""} onChange={e => { const updated = [...pmEdit.schedules]; updated[i] = { ...s, date: e.target.value }; setPmEdit({ ...pmEdit, schedules: updated }); }}
+  style={{ ...inp, colorScheme: "dark" }} />
                               </Field>
                               <Field label={t.pmAssign}>
                                 <Inp value={s.assignee || ""} onChange={e => { const updated = [...pmEdit.schedules]; updated[i] = { ...s, assignee: e.target.value }; setPmEdit({ ...pmEdit, schedules: updated }); }} placeholder="ชื่อผู้รับผิดชอบ" />
@@ -1112,27 +1113,7 @@ const { error } = await supabase.from("registrations").insert([rec]);
                                     style={inp}
                                   />
                                 </Field>
-                                <div style={s2}>
-                                  <div style={s2}>
-  <Field label="📧 ส่ง Calendar Email (คั่นด้วย , สำหรับหลาย Email)">
-    <input
-      value={pmEmails[i] || ""}
-      onChange={e => setPmEmails({ ...pmEmails, [i]: e.target.value })}
-      placeholder="email1@example.com, email2@example.com"
-      style={{ ...inp }}
-    />
-  </Field>
-</div>
                                 
-  <Field label="📧 Email สำหรับส่ง Calendar (คั่นด้วย , สำหรับหลาย Email)">
-    <input
-      value={pmEmails[i] || ""}
-      onChange={e => setPmEmails({ ...pmEmails, [i]: e.target.value })}
-      placeholder="email1@example.com, email2@example.com"
-      style={inp}
-    />
-  </Field>
-</div>
                               </div>
                             </div>
                           </div>
