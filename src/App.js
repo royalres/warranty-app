@@ -534,8 +534,11 @@ export default function App() {
       {/* Header */}
       <div style={{ background: DARK, padding: "18px 24px", marginBottom: 0, borderBottom: "2px solid " + GOLD }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", alignItems: "center" }}>
-  <img src="/logo.png" alt="Royal Group" style={{ height: 56, maxWidth: 240, objectFit: "contain" }} />
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+  <img src="/res-logo.png" alt="Royal Group" style={{ height: 56, maxWidth: 200, objectFit: "contain" }} />
+  <div style={{ borderLeft: "1px solid " + GOLD, paddingLeft: 14 }}>
+    <div style={{ fontSize: 12, color: GOLD }}>{t.appSub}</div>
+  </div>
 </div>
           <div style={{ display: "flex", gap: 6 }}>
             {[["th","ไทย"],["en","EN"],["zh","中文"]].map(([l, label]) => (
