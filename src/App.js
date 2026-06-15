@@ -512,16 +512,45 @@ const { error } = await supabase.from("registrations").insert([rec]);
   return (
     <div style={{ fontFamily: "sans-serif", maxWidth: 720, margin: "0 auto", color: "#1e293b" }}>
 
-      {/* Header */}
-      <div style={{ background: DARK, padding: "18px 24px", marginBottom: 0, borderBottom: "2px solid " + GOLD }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <img src="/res-logo.png" alt="Royal Group" style={{ height: 48, objectFit: "contain" }} />
-            <div>
-              <div style={{ fontWeight: 700, fontSize: 20, color: GOLD, letterSpacing: 1 }}>{t.appTitle}</div>
-              <div style={{ fontSize: 12, color: GOLD2 }}>{t.appSub}</div>
+     {/* Header */}
+      <div style={{ background: DARK, padding: "12px 24px", borderBottom: "1px solid " + BORDER, position: "sticky", top: 0, zIndex: 100 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+          {/* Logo */}
+          <img src="/res-logo.png" alt="Royal Group" style={{ height: 44, objectFit: "contain", flexShrink: 0 }} />
+
+          {/* User Info */}
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginLeft: "auto" }}>
+            <span style={{ fontSize: 12, color: TEXT2, display: "none" }}>{user?.email}</span>
+            <span style={{ fontSize: 10, padding: "3px 8px", borderRadius: 4,
+              background: profile?.role === "admin" ? "#2d1a00" : profile?.role === "staff" ? "#0d1f2d" : "#1a1a1a",
+              color: profile?.role === "admin" ? GOLD : profile?.role === "staff" ? "#60a5fa" : TEXT2,
+              border: "1px solid " + BORDER, letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 700 }}>
+              {profile?.role || "customer"}
+            </span>
+            <button onClick={onLogout}
+              style={{ background: "none", border: "1px solid " + BORDER, color: TEXT2, fontSize: 11, padding: "5px 10px", borderRadius: 4, cursor: "pointer", letterSpacing: "0.06em" }}>
+              LOGOUT
+            </button>
+          </div>
+
+          {/* Language */}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4, flexShrink: 0 }}>
+            <span style={{ fontSize: 10, color: TEXT2, letterSpacing: "0.05em" }}>🌐 Language</span>
+            <div style={{ display: "flex", gap: 4 }}>
+              {[["th","ไทย"],["en","EN"],["zh","中文"]].map(([l, label]) => (
+                <button key={l} onClick={() => setLang(l)}
+                  style={{ padding: "4px 10px", borderRadius: 4, fontSize: 12, cursor: "pointer",
+                    fontWeight: lang === l ? 700 : 400,
+                    border: lang === l ? "1px solid " + GOLD : "1px solid " + BORDER,
+                    background: lang === l ? GOLD : "transparent",
+                    color: lang === l ? DARK : TEXT2 }}>
+                  {label}
+                </button>
+              ))}
             </div>
           </div>
+        </div>
+      </div>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginRight: 12 }}>
   <span style={{ fontSize: 11, color: TEXT2, letterSpacing: "0.05em" }}>
     {profile?.full_name || user?.email}
