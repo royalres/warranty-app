@@ -1,7 +1,5 @@
 const GOLD = "#c9a84c";
-const DARK = "#0a1628";
 const DARK2 = "#0d1f3c";
-const DARK3 = "#112244";
 const BORDER = "#1e3a5f";
 const TEXT = "#e8edf5";
 const TEXT2 = "#7a9cc0";
