@@ -788,8 +788,18 @@ export default function App({ user, profile, onLogout }) {
                             <div style={{ fontWeight: 600, fontSize: 14, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: TEXT }}>{name}</div>
                             <div style={{ fontSize: 11, color: TEXT2, marginTop: 3, fontFamily: "monospace", letterSpacing: "0.05em" }}>{r.id}</div>
                           </div>
-                          <button onClick={() => { setViewRecord(r); setPmEdit(r.pm ? { ...r.pm, schedules: [...(r.pm.schedules || [])] } : { required: false, schedules: [] }); setActiveTab("info"); }}
-                            style={{ background: DARK, border: "1px solid " + BORDER, cursor: "pointer", color: GOLD, fontSize: 12, flexShrink: 0, padding: "6px 12px", borderRadius: 4, letterSpacing: "0.06em", fontWeight: 600 }}>VIEW</button>
+                          <div style={{ display: "flex", gap: 6 }}>
+  <button onClick={() => { setViewRecord(r); setPmEdit(r.pm ? { ...r.pm, schedules: [...(r.pm.schedules || [])] } : { required: false, schedules: [] }); setActiveTab("info"); }}
+    style={{ background: DARK, border: "1px solid " + BORDER, cursor: "pointer", color: GOLD, fontSize: 12, flexShrink: 0, padding: "6px 12px", borderRadius: 4, letterSpacing: "0.06em", fontWeight: 600 }}>VIEW</button>
+  {profile?.role === "admin" && (
+    <button onClick={async () => {
+      if (!window.confirm("ยืนยันการลบรายการนี้?")) return;
+      const { error } = await supabase.from("registrations").delete().eq("id", r.id);
+      if (!error) setRecords(rs => rs.filter(x => x.id !== r.id));
+    }}
+      style={{ background: "#2d0e0e", border: "1px solid #7f1d1d", cursor: "pointer", color: "#f87171", fontSize: 12, flexShrink: 0, padding: "6px 12px", borderRadius: 4, letterSpacing: "0.06em", fontWeight: 600 }}>DEL</button>
+  )}
+</div>
                         </div>
                         <div style={{ marginTop: 8, fontSize: 12, color: TEXT2, letterSpacing: "0.03em" }}>
                           <span style={{ marginRight: 16, color: TEXT }}>{r.model}</span>
