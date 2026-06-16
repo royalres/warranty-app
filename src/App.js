@@ -390,8 +390,8 @@ function fmtAddr(a) {
 
 function fmtWarranty(months, t) {
   const m = Number(months);
-  if (m < 12) return t.months(m);
-  return t.years(m / 12);
+  if (m % 12 === 0) return t.years(m / 12);
+  return t.months(m);
 }
 
 
