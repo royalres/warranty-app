@@ -134,20 +134,20 @@ export default function Auth({ onLogin }) {
           {mode === "login" && (
             <>
               <button onClick={() => { setMode("forgot"); setError(""); setMessage(""); }}
-                style={{ background: "none", border: "none", color: TEXT2, fontSize: 12, cursor: "pointer", letterSpacing: "0.05em" }}>
-                ลืมรหัสผ่าน?
-              </button>
-              <button onClick={() => { setMode("register"); setError(""); setMessage(""); }}
-                style={{ background: "none", border: "none", color: GOLD, fontSize: 12, cursor: "pointer", letterSpacing: "0.05em", fontWeight: 600 }}>
-                ยังไม่มีบัญชี? สมัครสมาชิก
-              </button>
+  style={{ background: "none", border: "none", color: TEXT2, fontSize: 12, cursor: "pointer", letterSpacing: "0.05em" }}>
+  Forgot Password?
+</button>
+<button onClick={() => { setMode("register"); setError(""); setMessage(""); }}
+  style={{ background: "none", border: "none", color: GOLD, fontSize: 12, cursor: "pointer", letterSpacing: "0.05em", fontWeight: 600 }}>
+  Don't have an account? Sign up
+</button>
             </>
           )}
           {(mode === "register" || mode === "forgot") && (
             <button onClick={() => { setMode("login"); setError(""); setMessage(""); }}
-              style={{ background: "none", border: "none", color: GOLD, fontSize: 12, cursor: "pointer", letterSpacing: "0.05em", fontWeight: 600 }}>
-              ← กลับไปหน้า Sign In
-            </button>
+  style={{ background: "none", border: "none", color: GOLD, fontSize: 12, cursor: "pointer", letterSpacing: "0.05em", fontWeight: 600 }}>
+  ← Back to Sign In
+</button>
           )}
         </div>
       </div>
